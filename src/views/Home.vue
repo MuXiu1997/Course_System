@@ -1,20 +1,19 @@
 <template>
   <div class="home"
-       style=
-         "position: fixed;
-         top: 0;
-         right: 0;
-         bottom: 0;
-         left: 0;"
   >
     <Table
-      height="600"
-      width="1200"
+      :height="clientHeight"
+      :width="clientWidth"
       :columns="columnsData"
       :data="tableData"
+      ref="table123"
+      class="scrollStyle"
     >
       <template v-for="(col,colIndex) in columnsData" slot-scope="{ row, index }" :slot="col.slot">
-        <div style="padding: 20px 0" :key="''+index+colIndex" class="date">
+        <div style="padding: 20px 18px;border-radius: 2.5%;" :key="''+index+colIndex"
+             :class="{'ccc': isaaaa(index,colIndex), 'date':true,'abb':isasd(index,colIndex),'qwe':isqwe(index,colIndex) &&isaaaa(index,colIndex)}"
+             @mouseover="bbb(index,colIndex)"
+        >
           <div>
             开始日期：
             <DatePicker
@@ -53,7 +52,7 @@
           <div>
             <label>
               讲&emsp;&emsp;师：
-              <Select v-model="row[col.slot].teacher" style="width:200px">
+              <Select v-model="row[col.slot].teacher" style="width:200px" @on-change="aaa()">
                 <Option v-for="options in row[col.slot].options" :value="options" :key="options">{{ options }}
                 </Option>
               </Select>
@@ -71,6 +70,10 @@
     name: 'home',
     data () {
       return {
+        asd: '',
+        qwer: [],
+        clientHeight: '',
+        clientWidth: '',
         columnsData: [
           {
             title: '班级',
@@ -81,48 +84,48 @@
           },
           {
             title: 'Python基础',
-            width: 300,
+            width: 310,
             slot: 'python'
           },
           {
             title: 'Web前端',
-            width: 300,
+            width: 310,
             slot: 'webFe'
           },
           {
             title: 'MySQL',
-            width: 300,
+            width: 310,
             slot: 'mysql'
           },
           {
             title: 'Web后端',
-            width: 300,
+            width: 310,
             slot: 'webBe'
           },
           {
             title: '中期项目',
-            width: 300,
+            width: 310,
             slot: 'projectM'
           },
           {
             title: '爬虫',
-            width: 300,
+            width: 310,
             slot: 'crawler'
           },
           {
             title: '后期项目',
-            width: 300,
+            width: 310,
             slot: 'projectL'
           },
           {
             title: 'AI训练营',
-            width: 300,
+            width: 310,
             slot: 'ai'
           }
         ],
         tableData: [
           {
-            className: 'Python162',
+            className: 'Python161',
             python: {
               startDate: null,
               endDate: null,
@@ -189,7 +192,7 @@
             }
           },
           {
-            className: 'Python161',
+            className: 'Python162',
             python: {
               startDate: null,
               endDate: null,
@@ -625,7 +628,45 @@
         }
       }
     },
+    mounted () {
+      // 获取浏览器可视区域高度
+      this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
+      this.clientWidth = `${document.documentElement.clientWidth}` - 1
+      console.log(this.clientWidth)
+      let _this = this
+      window.onresize = function temp () {
+        _this.clientHeight = `${document.documentElement.clientHeight}` - 1
+        _this.clientWidth = `${document.documentElement.clientWidth}` - 1
+        console.log(this.clientWidth)
+      }
+    },
     methods: {
+      isaaaa (rowIndex, colIndex) {
+        if (this.$refs.table123) {
+          let tableData = this.$refs.table123.$refs.tbody._props.data
+          return tableData[rowIndex][Object.keys(tableData[rowIndex])[colIndex]].aaaa.length > 0
+        } else {
+          return false
+        }
+      },
+      isasd (rowIndex, colIndex) {
+        if (this.$refs.table123) {
+          let tableData = this.$refs.table123.$refs.tbody._props.data
+          return tableData[rowIndex][Object.keys(tableData[rowIndex])[colIndex]].aaaa.filter(aa => aa === this.asd).length > 0
+        } else {
+          return false
+        }
+      },
+      bbb (rowIndex, colIndex) {
+        this.asd = '' + rowIndex + ',' + colIndex
+        this.qwer = [rowIndex, colIndex]
+      },
+      isqwe (rowIndex, colIndex) {
+        return rowIndex === this.qwer[0] && colIndex === this.qwer[1]
+      },
+      // qwerr (rowIndex, colIndex) {
+      //   this.qwer = [rowIndex, colIndex]
+      // },
       getNextWorkDay (startDate, cycle) {
         let dateObj = new Date(startDate)
         while (cycle !== 0) {
@@ -651,23 +692,34 @@
           let nextObj = rowObj[Object.keys(rowObj)[colIndex]]
           nextObj.startDate = this.getNextWorkDay(thisObj.startDate, thisObj.cycle)
           this.calculationEndDate(rowObj, colIndex)
+        } else {
+          this.aaa()
         }
-        this.aaa()
+
+        // console.log(this.$refs.table123.$refs.tbody._props.data)
       },
       aaa () {
+        let tableData = this.$refs.table123.$refs.tbody._props.data
+        console.log(123)
+        for (let i = 0; i < this.tableData.length; i++) {
+          for (let j = 1; j < this.columnsData.length; j++) {
+            tableData[i][Object.keys(tableData[i])[j]].aaaa = []
+          }
+        }
         for (let i = 0; i < this.tableData.length; i++) {
           for (let j = 0; j < this.columnsData.length; j++) {
             for (let x = i + 1; x < this.tableData.length; x++) {
               for (let y = 0; y < this.columnsData.length; y++) {
-                let obj1 = this.tableData[i][Object.keys(this.tableData[i])[j]]
-                let obj2 = this.tableData[x][Object.keys(this.tableData[x])[y]]
-                if (obj1.startDate && obj2.startDate && obj1.teacher && obj2.teacher) {
-                  console.log(obj1.startDate.valueOf(), obj2.startDate.valueOf())
+                let obj1 = tableData[i][Object.keys(tableData[i])[j]]
+                let obj2 = tableData[x][Object.keys(tableData[x])[y]]
+
+                if (obj1.startDate && obj2.startDate && obj1.endDate && obj2.endDate && obj1.teacher && obj2.teacher) {
+                  // console.log(obj1.startDate.valueOf(), obj2.startDate.valueOf())
                   if (obj1.teacher === obj2.teacher) {
-                    if (obj2.startDate.valueOf() < obj1.endDate.valueOf()) {
-                      console.log(obj1, obj2)
+                    if (obj2.startDate.valueOf() < obj1.endDate.valueOf()) { // 逻辑仍需补充
                       obj1.aaaa.push('' + x + ',' + y)
                       obj2.aaaa.push('' + i + ',' + j)
+                      console.log(obj1, obj2)
                     }
                   }
                 }
@@ -683,6 +735,18 @@
 <style scoped>
   .date div {
     margin-bottom: 8px;
+  }
+
+  .ccc {
+    background-color: rgba(255, 153, 0, 0.3);
+  }
+
+  .abb {
+    background-color: rgba(255, 153, 0, 8);
+  }
+
+  .qwe {
+    background-color: rgba(237, 64, 20, 0.9);
   }
 
   .date /deep/ .el-input-number--mini {
@@ -706,5 +770,13 @@
   .date /deep/ .ivu-input[disabled], fieldset[disabled] .ivu-input {
     background-color: #fff !important;
     color: #000 !important;
+  }
+
+  .home /deep/ .ivu-table-cell {
+    padding: 2px;
+  }
+
+  .home /deep/ .ivu-table-cell > span {
+    padding: 16px;
   }
 </style>

@@ -5,6 +5,11 @@
 </template>
 
 <style lang="scss">
+  body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden !important;
+      }
   /*#app {*/
   /*  font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
   /*  -webkit-font-smoothing: antialiased;*/
@@ -30,4 +35,25 @@
   /*.el-input-number__decrease, .el-input-number__increase {*/
   /*  background-color: #fff !important;*/
   /*}*/
+  *::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+
+  *::-webkit-scrollbar-button, .scrollStyle::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  *::-webkit-scrollbar-track-piece {
+    background: rgba(140, 140, 140, 0.25);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(45, 140, 240, 0.5);
+    border-radius: 6px;
+  }
 </style>
