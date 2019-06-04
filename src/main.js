@@ -5,15 +5,23 @@ import store from './store'
 
 import './axios'
 
-import iView from 'iview'
+import {
+  Table,
+  DatePicker,
+  Select,
+  Option
+} from 'iview'
 import 'iview/dist/styles/iview.css'
 
-import ElementUI from 'element-ui'
+import { InputNumber } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.use(iView)
+Vue.component('Table', Table)
+Vue.component('DatePicker', DatePicker)
+Vue.component('Select', Select)
+Vue.component('Option', Option)
 
-Vue.use(ElementUI)
+Vue.use(InputNumber)
 
 Vue.config.productionTip = false
 

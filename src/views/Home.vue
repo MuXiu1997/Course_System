@@ -132,12 +132,12 @@ export default {
     // 获取浏览器可视区域高度宽度
     this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
     this.clientWidth = `${document.documentElement.clientWidth}` - 1
-    console.log(this.clientWidth)
+    // console.log(this.clientWidth)
     let _this = this
     window.onresize = function temp () {
       _this.clientHeight = `${document.documentElement.clientHeight}` - 1
       _this.clientWidth = `${document.documentElement.clientWidth}` - 1
-      console.log(this.clientWidth)
+      // console.log(this.clientWidth)
     }
     this.$nextTick(() => {
       this.duplicateChecking()
@@ -164,6 +164,7 @@ export default {
     getNextWorkDay (startDate, duration) {
       let dateObj = new Date(startDate)
       while (duration !== 0) {
+        console.log(1111111)
         dateObj.setDate(dateObj.getDate() + 1)
         let dateStr = dateObj.getFullYear() + '-' +
             ('0' + (dateObj.getMonth() + 1)).slice(-2) + '-' +
@@ -187,6 +188,7 @@ export default {
         nextObj.startDate = this.getNextWorkDay(thisObj.startDate, thisObj.duration)
         this.calculationEndDate(rowObj, colIndex)
       } else {
+        console.log(765566)
         this.duplicateChecking()
       }
     },
@@ -218,7 +220,7 @@ export default {
     },
     duplicateChecking () {
       let tableData = this.$refs.courseTable.$refs.tbody.$props.data
-      console.log(123)
+      // console.log(123)
       for (let i = 0; i < this.tableData.length; i++) {
         for (let j = 1; j < this.columnsData.length; j++) {
           tableData[i][Object.keys(tableData[i])[j]].conflictArray = []
@@ -237,7 +239,7 @@ export default {
                   if (obj2.startDate.valueOf() <= obj1.endDate.valueOf()) { // 逻辑仍需补充
                     obj1.conflictArray.push('' + x + ',' + y)
                     obj2.conflictArray.push('' + i + ',' + j)
-                    console.log(obj1, obj2)
+                    // console.log(obj1, obj2)
                   }
                 }
               }
