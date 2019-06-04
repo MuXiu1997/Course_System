@@ -1,0 +1,46 @@
+  .date>div {
+    margin-bottom: 8px;
+  }
+
+  .duplicate {
+    background-color: rgba(255, 153, 0, 0.3);
+  }
+
+  .currentDuplicate {
+    background-color: rgba(255, 153, 0, 8);
+  }
+
+  .current {
+    background-color: rgba(237, 64, 20, 0.9);
+  }
+
+  .date /deep/ .el-input-number--mini {
+    width: 200px;
+    line-height: 30px;
+  }
+
+  .date /deep/ .el-input--mini .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .date /deep/ .el-input-number--mini .el-input-number__decrease, .date /deep/ .el-input-number--mini .el-input-number__increase {
+    width: 32px;
+  }
+
+  .date /deep/ .el-input-number__decrease, .date /deep/ .el-input-number__increase {
+    background-color: #fff;
+  }
+
+  .date /deep/ .ivu-input[disabled], fieldset[disabled] .ivu-input {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+
+  .home /deep/ .ivu-table-cell {
+    padding: 2px;
+  }
+
+  .home /deep/ .ivu-table-cell > span {
+    padding: 16px;
+  }
