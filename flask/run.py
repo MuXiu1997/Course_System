@@ -49,15 +49,7 @@ def get_workday_data():
 @app.route('/api/GET/columns-data')
 def get_columns_data():
     session = Session()
-    columns_data = [
-        {
-            'title': '班级',
-            'key': 0,
-            'width': 120,
-            'fixed': 'left',
-            'align': 'center'
-        }
-    ]
+    columns_data = []
     for each_major in session.query(Major).all():
         columns_data.append(
             {
@@ -102,10 +94,10 @@ def post_table_data():
     session = Session()
 
     table_data = request.json.get('tableData')
-
-    for index in range(len(table_data)):
-        del table_data[index]["_index"]
-        del table_data[index]["_rowKey"]
+    #
+    # for index in range(len(table_data)):
+    #     del table_data[index]["_index"]
+    #     del table_data[index]["_rowKey"]
         # class_name = table_data[index]["className"]
         # del table_data[index]["className"]
         # table_data[index] = dict({'className': class_name}, **table_data[index])

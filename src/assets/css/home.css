@@ -44,3 +44,7 @@
   .home /deep/ .ivu-table-cell > span {
     padding: 16px;
   }
+
+  #aaaaaaa::-webkit-scrollbar {
+    display: none !important;
+  }

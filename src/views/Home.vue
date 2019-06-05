@@ -1,84 +1,119 @@
 <template>
-  <div class="home"
-  >
-    <Table
-      :height="clientHeight"
-      :width="clientWidth"
-      :columns="columnsData"
-      :data="tableData"
-      ref="courseTable"
-      class="scrollStyle"
+  <div class="home" style="position: fixed;top: 0;right: 0;bottom: 0;left: 0">
+     <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+    </Drawer>
+    <div style=
+           "position: absolute;
+           top: 0;
+           right: 0;
+           left: 0;
+           white-space:nowrap;
+           padding: 4px 20px 0 20px;
+           overflow: auto;
+           height: 57px;"
+         id="aaaaaaa"
+         ref="aaaaaaa"
     >
-      <template v-for="(col,colIndex) in columnsData" slot-scope="{ row, index }" :slot="col.slot">
-        <div style="padding: 20px 18px;border-radius: 2.5%;" :key="''+index+colIndex"
-             :class="{
-             'duplicate': isDuplicate(index,colIndex),
-             'currentDuplicate':isCurrentDuplicate(index,colIndex),
-             'current':isCurrent(index,colIndex) &&isDuplicate(index,colIndex),
+      <div v-for="col in columnsData"
+           :key="col.title"
+           style=
+             "display: inline-block;
+             width: 304px;
+             height: 53px;
+             line-height: 50px;
+             text-align: center;
+             border-top: 1px solid #dee2e6;
+             border-bottom: 2px solid #dee2e6;"
+      >
+        <span style="font-size: 16px">{{ col.title }}</span>
+      </div>
+    </div>
+    <div style="position: absolute;top: 56px;right: 0;bottom: 0;left: 0;padding: 0 20px;overflow: auto"
+         class="scrollStyle"
+         ref="bbbbbbbb"
+         @scroll="sssss()"
+    >
+      <div v-for="(v,rowIndex) in tableData" :key="''+v+rowIndex"
+           style="white-space:nowrap;">
+        <div v-for="(v,colIndex) in columnsData" :key="''+v+colIndex"
+             style="display: inline-block;padding: 2px;width: 304px;height: 204px;border-bottom: 1px solid #dee2e6;">
+          <div style="padding: 20px 18px;border-radius: 2.5%;"
+               :class="{
+              'duplicate':isDuplicate(rowIndex,colIndex),
+              'currentDuplicate':isCurrentDuplicate(rowIndex,colIndex),
+              'current':isCurrent(rowIndex,colIndex) && isDuplicate(rowIndex,colIndex),
              'date':true
              }"
-             @mouseover="mouseover(index,colIndex)"
-        >
-          <div>
-            开始日期：
-            <DatePicker
-              type="date"
-              placeholder="Select date"
-              v-model="row[col.slot].startDate"
-              format="yyyy年M月d日"
-              :clearable="false"
-              style="width: 200px"
-              @on-change="calculationEndDate(row,colIndex)"
-            >
-            </DatePicker>
-          </div>
-          <div>
-            结束日期：
-            <DatePicker
-              type="date"
-              placeholder="Select date"
-              format="yyyy年M月d日"
-              disabled
-              v-model="row[col.slot].endDate"
-              style="width: 200px">
+               @mouseover="mouseover(rowIndex,colIndex)"
+          >
+            <div>
+              开始日期：
+              <DatePicker
+                type="date"
+                placeholder="Select date"
+                v-model="tableData[rowIndex][colIndex].startDate"
+                format="yyyy年M月d日"
+                :clearable="false"
+                style="width: 200px"
+                @on-change="calculationEndDate(tableData[rowIndex],colIndex)"
+              >
+              </DatePicker>
+            </div>
+            <div>
+              结束日期：
+              <DatePicker
+                type="date"
+                placeholder="Select date"
+                format="yyyy年M月d日"
+                disabled
+                v-model="tableData[rowIndex][colIndex].endDate"
+                style="width: 200px">
 
-            </DatePicker>
-          </div>
-          <div>
-            周&emsp;&emsp;期：
-            <el-input-number
-              size="mini"
-              v-model="row[col.slot].duration"
-              :min="0"
-              @change="calculationEndDate(row,colIndex)"
-            >
-            </el-input-number>
-          </div>
-          <div>
-            <label>
-              讲&emsp;&emsp;师：
-              <Select v-model="row[col.slot].teacher" style="width:200px" @on-change="duplicateChecking()">
-                <Option v-for="options in optionsData[colIndex-1]" :value="options" :key="options">{{ options }}
-                </Option>
-              </Select>
-            </label>
-          </div>
-          <i class="el-icon-edit-outline"
-             @click="save()"
-             style=
-               "position: fixed;
+              </DatePicker>
+            </div>
+            <div>
+              周&emsp;&emsp;期：
+              <el-input-number
+                size="mini"
+                v-model="tableData[rowIndex][colIndex].duration"
+                :min="0"
+                @change="calculationEndDate(tableData[rowIndex],colIndex)"
+              >
+              </el-input-number>
+            </div>
+            <div>
+              <label>
+                讲&emsp;&emsp;师：
+                <Select v-model="tableData[rowIndex][colIndex].teacher" style="width:200px"
+                        @on-change="duplicateChecking()">
+                  <Option v-for="options in optionsData[colIndex]" :value="options" :key="options">{{ options }}
+                  </Option>
+                </Select>
+              </label>
+            </div>
+            <i class="el-icon-edit-outline"
+               @click="save()"
+               style=
+                 "position: fixed;
              padding: 5px;
              right: -5px;
-             top: 50%;
+             top: 257px;
              transform:translateY(-50%);
              font-size: 30px;
+             background-color: #fff;
              color: rgba(45, 140, 240, 0.1);
              border-radius: 20%;
-             border: 2px rgba(45, 140, 240, 0.1) solid;"
-          ></i>
+             border: 2px rgba(45, 140, 240, 0.1) solid;
+             z-index: 10000;"
+            ></i>
+          </div>
         </div>
-      </template>
-    </Table>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -87,6 +122,7 @@ export default {
   name: 'home',
   data () {
     return {
+      value1: false,
       currentStr: '',
       current: [],
       clientHeight: '',
@@ -94,16 +130,301 @@ export default {
       columnsData: [],
       optionsData: [],
       tableData: [
-        {
-          0: 'Python161',
-          1: {
-            startDate: null,
-            endDate: null,
-            duration: 0,
-            teacher: null,
-            conflictArray: []
-          }
-        }
+        // [
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 6,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 4,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 10,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   'Python161'
+        // ],
+        // [
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 6,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 4,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 10,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   'Python165'
+        // ],
+        // [
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 6,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 4,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 10,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   'Python165'
+        // ],
+        // [
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 6,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 4,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 10,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   'Python165'
+        // ],
+        // [
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 6,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 4,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 10,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 15,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   {
+        //     startDate: null,
+        //     endDate: null,
+        //     duration: 20,
+        //     teacher: null,
+        //     conflictArray: []
+        //   },
+        //   'Python165'
+        // ]
       ],
       isWorkdayData: {}
     }
@@ -128,25 +449,28 @@ export default {
         this.optionsData = response.data['optionsData']
       })
   },
-  mounted () {
-    // 获取浏览器可视区域高度宽度
-    this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
-    this.clientWidth = `${document.documentElement.clientWidth}` - 1
-    // console.log(this.clientWidth)
-    let _this = this
-    window.onresize = function temp () {
-      _this.clientHeight = `${document.documentElement.clientHeight}` - 1
-      _this.clientWidth = `${document.documentElement.clientWidth}` - 1
-      // console.log(this.clientWidth)
-    }
-    this.$nextTick(() => {
-      this.duplicateChecking()
-    })
-  },
+  // mounted () {
+  //   // 获取浏览器可视区域高度宽度
+  //   this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
+  //   this.clientWidth = `${document.documentElement.clientWidth}` - 1
+  //   // console.log(this.clientWidth)
+  //   let _this = this
+  //   window.onresize = function temp () {
+  //     _this.clientHeight = `${document.documentElement.clientHeight}` - 1
+  //     _this.clientWidth = `${document.documentElement.clientWidth}` - 1
+  //     // console.log(this.clientWidth)
+  //   }
+  //   this.$nextTick(() => {
+  //     this.duplicateChecking()
+  //   })
+  // },
   methods: {
+    sssss () {
+      this.$refs.aaaaaaa.scrollLeft = this.$refs.bbbbbbbb.scrollLeft / this.$refs.bbbbbbbb.scrollWidth * this.$refs.aaaaaaa.scrollWidth
+    },
     save () {
       this.$axios.post('/api/POST/table-data', {
-        'tableData': this.$refs.courseTable.$refs.tbody.$props.data
+        'tableData': this.tableData
       })
     },
     load (_time) {
@@ -175,8 +499,8 @@ export default {
       }
       return dateObj
     },
-    calculationEndDate (rowObj, colIndex) {
-      let thisObj = rowObj[Object.keys(rowObj)[colIndex]]
+    calculationEndDate (rowArray, colIndex) {
+      let thisObj = rowArray[colIndex]
       if (thisObj.startDate && thisObj.duration) {
         thisObj.endDate = this.getNextWorkDay(thisObj.startDate, thisObj.duration - 1)
       } else {
@@ -184,32 +508,22 @@ export default {
       }
 
       if (thisObj.startDate && ++colIndex < this.columnsData.length) {
-        let nextObj = rowObj[Object.keys(rowObj)[colIndex]]
+        let nextObj = rowArray[colIndex]
         nextObj.startDate = this.getNextWorkDay(thisObj.startDate, thisObj.duration)
-        this.calculationEndDate(rowObj, colIndex)
+        this.calculationEndDate(rowArray, colIndex)
       } else {
         console.log(765566)
-        this.duplicateChecking()
+        // this.duplicateChecking()
       }
     },
     // #################################################################################################################
     isDuplicate (rowIndex, colIndex) {
-      if (this.$refs.courseTable) {
-        let tableData = this.$refs.courseTable.$refs.tbody.$props.data
-        return tableData[rowIndex][Object.keys(tableData[rowIndex])[colIndex]].conflictArray.length > 0
-      } else {
-        return false
-      }
+      return this.tableData[rowIndex][colIndex].conflictArray.length > 0
     },
     isCurrentDuplicate (rowIndex, colIndex) {
-      if (this.$refs.courseTable) {
-        let tableData = this.$refs.courseTable.$refs.tbody.$props.data
-        return tableData[rowIndex][Object.keys(tableData[rowIndex])[colIndex]].conflictArray
-          .filter(conflict => conflict === this.currentStr)
-          .length > 0
-      } else {
-        return false
-      }
+      return this.tableData[rowIndex][colIndex].conflictArray
+        .filter(conflict => conflict === this.currentStr)
+        .length > 0
     },
     mouseover (rowIndex, colIndex) {
       this.currentStr = '' + rowIndex + ',' + colIndex
@@ -218,20 +532,20 @@ export default {
     isCurrent (rowIndex, colIndex) {
       return rowIndex === this.current[0] && colIndex === this.current[1]
     },
+    // #################################################################################################################
     duplicateChecking () {
-      let tableData = this.$refs.courseTable.$refs.tbody.$props.data
       // console.log(123)
       for (let i = 0; i < this.tableData.length; i++) {
-        for (let j = 1; j < this.columnsData.length; j++) {
-          tableData[i][Object.keys(tableData[i])[j]].conflictArray = []
+        for (let j = 0; j < this.columnsData.length; j++) {
+          this.tableData[i][j].conflictArray = []
         }
       }
       for (let i = 0; i < this.tableData.length; i++) {
         for (let j = 0; j < this.columnsData.length; j++) {
           for (let x = i + 1; x < this.tableData.length; x++) {
             for (let y = 0; y < this.columnsData.length; y++) {
-              let obj1 = tableData[i][Object.keys(tableData[i])[j]]
-              let obj2 = tableData[x][Object.keys(tableData[x])[y]]
+              let obj1 = this.tableData[i][j]
+              let obj2 = this.tableData[x][y]
 
               if (obj1.endDate && obj2.endDate && obj1.teacher && obj2.teacher) {
                 // console.log(obj1.startDate.valueOf(), obj2.startDate.valueOf())
