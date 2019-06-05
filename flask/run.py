@@ -2,6 +2,8 @@ import json
 import time
 
 from flask import Flask, jsonify, Response, request
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 import requests
 
@@ -14,6 +16,10 @@ HUA_JI = False
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})  # 使前端能从后端拿到数据
+
+admin = Admin(app)
+admin.add_view(ModelView(Teacher, Session()))
+admin.add_view(ModelView(Major, Session()))
 
 HOST = '0.0.0.0'
 PORT = 5000

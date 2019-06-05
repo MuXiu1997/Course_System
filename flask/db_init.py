@@ -9,14 +9,14 @@ def major_init():
     session = Session()
 
     session.add_all(
-        [Major(title='Python基础', duration=20, slot='python'),
-         Major(title='Web前端', duration=6, slot='webFe'),
-         Major(title='MySQL', duration=4, slot='mysql'),
-         Major(title='Web后端', duration=20, slot='webBe'),
-         Major(title='中期项目', duration=10, slot='projectM'),
-         Major(title='爬虫', duration=15, slot='crawler'),
-         Major(title='后期项目', duration=15, slot='projectL'),
-         Major(title='AI训练营', duration=20, slot='ai'),
+        [Major(title='Python基础', duration=20),
+         Major(title='Web前端', duration=6),
+         Major(title='MySQL', duration=4),
+         Major(title='Web后端', duration=20),
+         Major(title='中期项目', duration=10),
+         Major(title='爬虫', duration=15),
+         Major(title='后期项目', duration=15),
+         Major(title='AI训练营', duration=20),
          ]
     )
     session.commit()

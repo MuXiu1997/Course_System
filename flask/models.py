@@ -28,6 +28,9 @@ class Teacher(Base):
     name = Column(String())
     major = relationship('Major', secondary=association_table, backref='teacher')
 
+    def __repr__(self):
+        return self.name
+
 
 class Major(Base):
     __tablename__ = 'major'
@@ -35,7 +38,9 @@ class Major(Base):
     id = Column(Integer(), primary_key=True, autoincrement=True)
     title = Column(String())
     duration = Column(Integer())
-    slot = Column(String())
+
+    def __repr__(self):
+        return self.title
 
 
 class Archive(Base):

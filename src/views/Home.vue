@@ -5,15 +5,52 @@
         <p>Some contents...</p>
         <p>Some contents...</p>
     </Drawer>
+    <div style="width: 140px;height: 57px;position: fixed;top: 0;left: 0;padding-top: 4px;padding-left: 20px">
+      <div style="height: 53px;
+             line-height: 50px;
+             text-align: center;
+             border-top: 1px solid #dee2e6;
+             border-bottom: 2px solid #dee2e6;">
+        <span style="font-size: 16px">班次</span>
+      </div>
+      </div>
+    <div style=
+           "position: absolute;
+           top: 57px;
+           bottom: 0;
+           left: 0;
+           overflow: auto;"
+         id="ccccccc"
+         ref="ccccccc"
+    >
+      <div v-for="(v,rowIndex) in tableData" :key="''+v+rowIndex"
+           style="width: 140px;height: 204px;padding-left: 20px;background-color: white;z-index: 100000">
+        <div style="
+             text-align: center;
+             line-height: 200px;
+             height: 203px;
+             border-bottom: 1px solid #dee2e6;
+             border-right: 1px solid #dee2e6;
+             background-color: white;
+             z-index: 100000
+             ">
+        {{ v[columnsData.length] }}
+          </div>
+      </div>
+      <div style="height: 100px">
+
+      </div>
+    </div>
     <div style=
            "position: absolute;
            top: 0;
            right: 0;
-           left: 0;
+           left: 140px;
            white-space:nowrap;
-           padding: 4px 20px 0 20px;
+           padding: 4px 20px 0 0;
            overflow: auto;
-           height: 57px;"
+           height: 57px;
+           z-index: 100;"
          id="aaaaaaa"
          ref="aaaaaaa"
     >
@@ -30,8 +67,11 @@
       >
         <span style="font-size: 16px">{{ col.title }}</span>
       </div>
+      <div style="width: 100px;display: inline-block;">
+
+      </div>
     </div>
-    <div style="position: absolute;top: 56px;right: 0;bottom: 0;left: 0;padding: 0 20px;overflow: auto"
+    <div style="position: absolute;top: 56px;right: 0;bottom: 0;left: 140px;overflow: auto"
          class="scrollStyle"
          ref="bbbbbbbb"
          @scroll="sssss()"
@@ -99,9 +139,8 @@
                style=
                  "position: fixed;
              padding: 5px;
-             right: -5px;
-             top: 257px;
-             transform:translateY(-50%);
+             right: 10px;
+             bottom: 10px;
              font-size: 30px;
              background-color: #fff;
              color: rgba(45, 140, 240, 0.1);
@@ -110,6 +149,9 @@
              z-index: 10000;"
             ></i>
           </div>
+        </div>
+        <div style="width: 20px;display: inline-block">
+
         </div>
       </div>
 
@@ -466,7 +508,8 @@ export default {
   // },
   methods: {
     sssss () {
-      this.$refs.aaaaaaa.scrollLeft = this.$refs.bbbbbbbb.scrollLeft / this.$refs.bbbbbbbb.scrollWidth * this.$refs.aaaaaaa.scrollWidth
+      this.$refs.aaaaaaa.scrollLeft = this.$refs.bbbbbbbb.scrollLeft
+      this.$refs.ccccccc.scrollTop = this.$refs.bbbbbbbb.scrollTop
     },
     save () {
       this.$axios.post('/api/POST/table-data', {
