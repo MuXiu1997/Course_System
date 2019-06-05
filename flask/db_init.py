@@ -9,15 +9,16 @@ def major_init():
     session = Session()
 
     session.add_all(
-        [Major(title='Python基础', duration=20),
-         Major(title='Web前端', duration=6),
-         Major(title='MySQL', duration=4),
-         Major(title='Web后端', duration=20),
-         Major(title='中期项目', duration=10),
-         Major(title='爬虫', duration=15),
-         Major(title='后期项目', duration=15),
-         Major(title='AI训练营', duration=20),
-         ]
+        [
+            Major(title='Python基础', duration=20, order=1),
+            Major(title='Web前端', duration=6, order=2),
+            Major(title='MySQL', duration=4, order=3),
+            Major(title='Web后端', duration=20, order=4),
+            Major(title='中期项目', duration=10, order=5),
+            Major(title='爬虫', duration=15, order=6),
+            Major(title='后期项目', duration=15, order=7),
+            Major(title='AI训练营', duration=20, order=8),
+        ]
     )
     session.commit()
     session.close()
@@ -27,15 +28,16 @@ def teacher_init():
     session = Session()
 
     session.add_all(
-        [Teacher(name='韩博文'),
-         Teacher(name='侯秋娜'),
-         Teacher(name='矫键'),
-         Teacher(name='李小波'),
-         Teacher(name='毛信宇'),
-         Teacher(name='徐鑫'),
-         Teacher(name='张意林'),
-         Teacher(name='赵鹏飞')
-         ]
+        [
+            Teacher(name='韩博文'),
+            Teacher(name='侯秋娜'),
+            Teacher(name='矫键'),
+            Teacher(name='李小波'),
+            Teacher(name='毛信宇'),
+            Teacher(name='徐鑫'),
+            Teacher(name='张意林'),
+            Teacher(name='赵鹏飞')
+        ]
     )
     session.commit()
     session.close()

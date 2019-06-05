@@ -10,7 +10,9 @@ import {
   DatePicker,
   Select,
   Option,
-  Drawer
+  Drawer,
+  Modal,
+  Input
 } from 'iview'
 import 'iview/dist/styles/iview.css'
 
@@ -22,6 +24,8 @@ Vue.component('DatePicker', DatePicker)
 Vue.component('Select', Select)
 Vue.component('Option', Option)
 Vue.component('Drawer', Drawer)
+Vue.component('Modal', Modal)
+Vue.component('Input', Input)
 
 Vue.use(InputNumber)
 

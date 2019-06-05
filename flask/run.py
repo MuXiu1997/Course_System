@@ -1,5 +1,5 @@
 import json
-import time
+# import time
 
 from flask import Flask, jsonify, Response, request
 from flask_admin import Admin
@@ -16,10 +16,12 @@ HUA_JI = False
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})  # 使前端能从后端拿到数据
+app.config['SECRET_KEY'] = os.urandom(24)
 
-admin = Admin(app)
+admin = Admin(app, template_mode='bootstrap3')
 admin.add_view(ModelView(Teacher, Session()))
 admin.add_view(ModelView(Major, Session()))
+admin.add_view(ModelView(ClassName, Session()))
 
 HOST = '0.0.0.0'
 PORT = 5000
@@ -56,12 +58,10 @@ def get_workday_data():
 def get_columns_data():
     session = Session()
     columns_data = []
-    for each_major in session.query(Major).all():
+    for each_major in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
         columns_data.append(
             {
                 'title': each_major.title,
-                'width': 310,
-                'slot': each_major.id
             }
         )
     session.close()
@@ -100,19 +100,22 @@ def post_table_data():
     session = Session()
 
     table_data = request.json.get('tableData')
-    #
-    # for index in range(len(table_data)):
-    #     del table_data[index]["_index"]
-    #     del table_data[index]["_rowKey"]
-        # class_name = table_data[index]["className"]
-        # del table_data[index]["className"]
-        # table_data[index] = dict({'className': class_name}, **table_data[index])
 
-    table_data_obj = Archive(time=time.time(), info=json.dumps(table_data, ensure_ascii=False))
-    session.add(table_data_obj)
-
+    for i in table_data:
+        for j in i:
+            if isinstance(j, dict):
+                old_obj = session.query(Archive).filter_by(class_id=i[-1], major_id=j['id']).first()
+                if old_obj:
+                    session.delete(old_obj)
+                    j['startDate'] = j['startDate'][:8] + str((int(j['startDate'][8:10])) + 1) + j['startDate'][10:]
+                    j['endDate'] = j['endDate'][:8] + str((int(j['endDate'][8:10]) + 1)) + j['endDate'][10:]
+                session.add(Archive(class_id=i[-1],
+                                    major_id=j['id'],
+                                    info=json.dumps(j, ensure_ascii=False))
+                            )
     session.commit()
     session.close()
+
     return Response(status=200)
 
 
@@ -120,17 +123,55 @@ def post_table_data():
 def get_table_data():
     session = Session()
 
-    _time = request.args.get("time")
-    print(_time)
-    table_data = ''
-    if _time:
-        pass
-    else:
-        table_data_obj = session.query(Archive).all()[-1]
-        table_data = json.loads(table_data_obj.info)
+    table_data = []
+    for i in session.query(ClassName).filter_by(is_show=True).all():
+        a = []
+        for j in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
+            c = session.query(Archive).filter_by(class_id=i.id, major_id=j.id).first()
+            if c:
+                b = json.loads(c.info)
+            else:
+                b = {
+                    'startDate': None,
+                    'endDate': None,
+                    'duration': j.duration,
+                    'teacher': None,
+                    'conflictArray': [],
+                    'id': j.id
+                }
+            a.append(b)
+        a.append(i.class_name)
+        a.append(i.id)
+        table_data.append(a)
+    return jsonify({'tableData': table_data})
+
+
+@app.route('/api/POST/new-class', methods=['POST'])
+def post_new_class():
+    new_class_name = request.json.get('newClassName')
+
+    session = Session()
+    new_class_obj = ClassName(class_name=new_class_name)
+    session.add(new_class_obj)
+    session.commit()
+
+    new_class = []
+    for each_major in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
+        new_class.append(
+            {
+                'startDate': None,
+                'endDate': None,
+                'duration': each_major.duration,
+                'teacher': None,
+                'conflictArray': [],
+                'id': each_major.id
+            },
+        )
+    new_class.append(new_class_obj.class_name)
+    new_class.append(new_class_obj.id)
 
     session.close()
-    return jsonify({'tableData': table_data})
+    return jsonify({'newClass': new_class})
 
 
 if __name__ == '__main__':

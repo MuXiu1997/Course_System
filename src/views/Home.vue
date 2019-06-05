@@ -1,10 +1,46 @@
 <template>
   <div class="home" style="position: fixed;top: 0;right: 0;bottom: 0;left: 0">
-     <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-    </Drawer>
+    <i class="el-icon-edit-outline"
+               @click="save()"
+               style=
+                 "position: fixed;
+             padding: 5px;
+             right: 10px;
+             bottom: 10px;
+             font-size: 30px;
+             background-color: #fff;
+             color: rgba(45, 140, 240, 0.1);
+             border-radius: 20%;
+             border: 2px rgba(45, 140, 240, 0.1) solid;
+             z-index: 10000;"
+            ></i>
+            <i class="el-icon-circle-plus-outline"
+               @click="modalKey = true"
+               style=
+                 "position: fixed;
+             padding: 5px;
+             right: 60px;
+             bottom: 10px;
+             font-size: 30px;
+             background-color: #fff;
+             color: rgba(45, 140, 240, 0.1);
+             border-radius: 20%;
+             border: 2px rgba(45, 140, 240, 0.1) solid;
+             z-index: 10000;">
+            </i>
+<!--    <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>-->
+<!--      <p>Some contents...</p>-->
+<!--      <p>Some contents...</p>-->
+<!--      <p>Some contents...</p>-->
+<!--    </Drawer>-->
+    <Modal
+      v-model="modalKey"
+      title="新建班级"
+      @on-ok="createNewClass()"
+      @on-cancel="modalKey = false"
+    style="text-align: center">
+      <label>班级名：<Input v-model="newClassName" placeholder="请输入班级名" clearable style="width: 200px"/></label>
+    </Modal>
     <div style="width: 140px;height: 57px;position: fixed;top: 0;left: 0;padding-top: 4px;padding-left: 20px">
       <div style="height: 53px;
              line-height: 50px;
@@ -13,7 +49,7 @@
              border-bottom: 2px solid #dee2e6;">
         <span style="font-size: 16px">班次</span>
       </div>
-      </div>
+    </div>
     <div style=
            "position: absolute;
            top: 57px;
@@ -34,11 +70,10 @@
              background-color: white;
              z-index: 100000
              ">
-        {{ v[columnsData.length] }}
-          </div>
+          {{ v[columnsData.length] }}
+        </div>
       </div>
-      <div style="height: 100px">
-
+      <div style="height: 200px">
       </div>
     </div>
     <div style=
@@ -134,27 +169,14 @@
                 </Select>
               </label>
             </div>
-            <i class="el-icon-edit-outline"
-               @click="save()"
-               style=
-                 "position: fixed;
-             padding: 5px;
-             right: 10px;
-             bottom: 10px;
-             font-size: 30px;
-             background-color: #fff;
-             color: rgba(45, 140, 240, 0.1);
-             border-radius: 20%;
-             border: 2px rgba(45, 140, 240, 0.1) solid;
-             z-index: 10000;"
-            ></i>
           </div>
         </div>
         <div style="width: 20px;display: inline-block">
 
         </div>
       </div>
-
+      <div style="height: 100px">
+      </div>
     </div>
   </div>
 </template>
@@ -164,6 +186,8 @@ export default {
   name: 'home',
   data () {
     return {
+      newClassName: '',
+      modalKey: false,
       value1: false,
       currentStr: '',
       current: [],
@@ -171,303 +195,7 @@ export default {
       clientWidth: '',
       columnsData: [],
       optionsData: [],
-      tableData: [
-        // [
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 6,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 4,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 10,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   'Python161'
-        // ],
-        // [
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 6,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 4,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 10,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   'Python165'
-        // ],
-        // [
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 6,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 4,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 10,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   'Python165'
-        // ],
-        // [
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 6,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 4,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 10,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   'Python165'
-        // ],
-        // [
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 6,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 4,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 10,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 15,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   {
-        //     startDate: null,
-        //     endDate: null,
-        //     duration: 20,
-        //     teacher: null,
-        //     conflictArray: []
-        //   },
-        //   'Python165'
-        // ]
-      ],
+      tableData: [],
       isWorkdayData: {}
     }
   },
@@ -507,11 +235,20 @@ export default {
   //   })
   // },
   methods: {
+    createNewClass () {
+      this.$axios.post('/api/POST/new-class', {
+        'newClassName': this.newClassName
+      })
+        .then(response => {
+          this.tableData.push(response.data['newClass'])
+        })
+    },
     sssss () {
       this.$refs.aaaaaaa.scrollLeft = this.$refs.bbbbbbbb.scrollLeft
       this.$refs.ccccccc.scrollTop = this.$refs.bbbbbbbb.scrollTop
     },
     save () {
+      console.log(this.tableData)
       this.$axios.post('/api/POST/table-data', {
         'tableData': this.tableData
       })

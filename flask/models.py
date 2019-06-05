@@ -1,6 +1,6 @@
 import os
 
-from sqlalchemy import create_engine, Column, String, Integer, Table, ForeignKey,Float
+from sqlalchemy import create_engine, Column, String, Integer, Table, ForeignKey, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -21,6 +21,14 @@ association_table = Table('association', Base.metadata,
                           )
 
 
+# archive_table = Table('Archive', Base.metadata,
+#                       Column('class_id', Integer, ForeignKey('class_name.id')),
+#                       Column('major_id', Integer, ForeignKey('major.id')),
+#                       Column('info', String)
+#                       )
+
+
+# 老师
 class Teacher(Base):
     __tablename__ = 'teacher'
 
@@ -32,21 +40,35 @@ class Teacher(Base):
         return self.name
 
 
+# 课程
 class Major(Base):
     __tablename__ = 'major'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     title = Column(String())
     duration = Column(Integer())
+    order = Column(Integer(), unique=True)
+    is_show = Column(Boolean(), default=True)
 
     def __repr__(self):
         return self.title
 
 
+class ClassName(Base):
+    __tablename__ = 'class_name'
+
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+    class_name = Column(String())
+    is_show = Column(Boolean(), default=True)
+
+
+# 存档 暂时未用
 class Archive(Base):
     __tablename__ = 'archive'
 
-    time = Column(Float(), primary_key=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+    class_id = Column(Integer())
+    major_id = Column(Integer())
     info = Column(String())
 
 
