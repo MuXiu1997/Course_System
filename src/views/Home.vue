@@ -1,9 +1,9 @@
 <template>
   <div class="home" style="position: fixed;top: 0;right: 0;bottom: 0;left: 0">
-    <i class="el-icon-edit-outline"
-               @click="save()"
-               style=
-                 "position: fixed;
+    <i class="el-icon-edit-outline asdasd"
+       @click="save()"
+       style=
+         "position: fixed;
              padding: 5px;
              right: 10px;
              bottom: 10px;
@@ -13,11 +13,11 @@
              border-radius: 20%;
              border: 2px rgba(45, 140, 240, 0.1) solid;
              z-index: 10000;"
-            ></i>
-            <i class="el-icon-circle-plus-outline"
-               @click="modalKey = true"
-               style=
-                 "position: fixed;
+    ></i>
+    <i class="el-icon-circle-plus-outline asdasd"
+       @click="modalKey = true"
+       style=
+         "position: fixed;
              padding: 5px;
              right: 60px;
              bottom: 10px;
@@ -27,18 +27,18 @@
              border-radius: 20%;
              border: 2px rgba(45, 140, 240, 0.1) solid;
              z-index: 10000;">
-            </i>
-<!--    <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>-->
-<!--      <p>Some contents...</p>-->
-<!--      <p>Some contents...</p>-->
-<!--      <p>Some contents...</p>-->
-<!--    </Drawer>-->
+    </i>
+    <!--    <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>-->
+    <!--      <p>Some contents...</p>-->
+    <!--      <p>Some contents...</p>-->
+    <!--      <p>Some contents...</p>-->
+    <!--    </Drawer>-->
     <Modal
       v-model="modalKey"
       title="新建班级"
       @on-ok="createNewClass()"
       @on-cancel="modalKey = false"
-    style="text-align: center">
+      style="text-align: center">
       <label>班级名：<Input v-model="newClassName" placeholder="请输入班级名" clearable style="width: 200px"/></label>
     </Modal>
     <div style="width: 140px;height: 57px;position: fixed;top: 0;left: 0;padding-top: 4px;padding-left: 20px">
@@ -182,8 +182,11 @@
 </template>
 
 <script>
+import { Notification } from 'element-ui'
+
 export default {
   name: 'home',
+  components: { Notification },
   data () {
     return {
       newClassName: '',
@@ -195,7 +198,9 @@ export default {
       clientWidth: '',
       columnsData: [],
       optionsData: [],
-      tableData: [],
+      tableData: [
+        { teacher: null }
+      ],
       isWorkdayData: {}
     }
   },
@@ -248,10 +253,29 @@ export default {
       this.$refs.ccccccc.scrollTop = this.$refs.bbbbbbbb.scrollTop
     },
     save () {
-      console.log(this.tableData)
+      // console.log(this.tableData)
       this.$axios.post('/api/POST/table-data', {
         'tableData': this.tableData
       })
+        .then(response => {
+          // console.log(response.status)
+          if (response.status === 200) {
+            Notification({
+              title: 'success',
+              message: '保存成功',
+              type: 'success'
+            })
+          } else {
+            Notification({
+              title: 'error',
+              message: '保存失败',
+              type: 'error'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     load (_time) {
       this.$axios.get('/api/GET/table-data', {
@@ -268,7 +292,7 @@ export default {
     getNextWorkDay (startDate, duration) {
       let dateObj = new Date(startDate)
       while (duration !== 0) {
-        console.log(1111111)
+        // console.log(1111111)
         dateObj.setDate(dateObj.getDate() + 1)
         let dateStr = dateObj.getFullYear() + '-' +
             ('0' + (dateObj.getMonth() + 1)).slice(-2) + '-' +
@@ -292,7 +316,7 @@ export default {
         nextObj.startDate = this.getNextWorkDay(thisObj.startDate, thisObj.duration)
         this.calculationEndDate(rowArray, colIndex)
       } else {
-        console.log(765566)
+        // console.log(765566)
         // this.duplicateChecking()
       }
     },
