@@ -2,6 +2,8 @@ import json
 import time
 
 from flask import Flask, jsonify, Response, request
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 import requests
 
@@ -14,6 +16,10 @@ HUA_JI = False
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})  # 使前端能从后端拿到数据
+
+admin = Admin(app)
+admin.add_view(ModelView(Teacher, Session()))
+admin.add_view(ModelView(Major, Session()))
 
 HOST = '0.0.0.0'
 PORT = 5000
@@ -49,15 +55,7 @@ def get_workday_data():
 @app.route('/api/GET/columns-data')
 def get_columns_data():
     session = Session()
-    columns_data = [
-        {
-            'title': '班级',
-            'key': 0,
-            'width': 120,
-            'fixed': 'left',
-            'align': 'center'
-        }
-    ]
+    columns_data = []
     for each_major in session.query(Major).all():
         columns_data.append(
             {
@@ -102,10 +100,10 @@ def post_table_data():
     session = Session()
 
     table_data = request.json.get('tableData')
-
-    for index in range(len(table_data)):
-        del table_data[index]["_index"]
-        del table_data[index]["_rowKey"]
+    #
+    # for index in range(len(table_data)):
+    #     del table_data[index]["_index"]
+    #     del table_data[index]["_rowKey"]
         # class_name = table_data[index]["className"]
         # del table_data[index]["className"]
         # table_data[index] = dict({'className': class_name}, **table_data[index])
