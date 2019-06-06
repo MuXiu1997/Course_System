@@ -1,14 +1,16 @@
+import datetime
 import json
-# import time
+import logging
 
+import requests
 from flask import Flask, jsonify, Response, request
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
-import requests
 
 from models import *
-import logging
+
+# import time
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -114,6 +116,15 @@ def get_table_data():
 
 @app.route('/api/POST/table-data', methods=['POST'])
 def post_table_data():
+    def get_correct_date(date_str):
+        correct_date = datetime.date(
+            int(date_str[:4]),
+            int(date_str[5:7]),
+            int(date_str[8:10])
+        ) + datetime.timedelta(1)
+
+        return str(correct_date) + date_str[10:]
+
     session = Session()
 
     table_data = request.json.get('tableData')
@@ -124,12 +135,17 @@ def post_table_data():
                 old_obj = session.query(Archive).filter_by(class_id=i[-1], major_id=j['id']).first()
                 if old_obj:
                     session.delete(old_obj)
-                    j['startDate'] = j['startDate'][:8] + str((int(j['startDate'][8:10])) + 1) + j['startDate'][10:]
-                    j['endDate'] = j['endDate'][:8] + str((int(j['endDate'][8:10]) + 1)) + j['endDate'][10:]
-                session.add(Archive(class_id=i[-1],
-                                    major_id=j['id'],
-                                    info=json.dumps(j, ensure_ascii=False))
-                            )
+                    j['startDate'] = get_correct_date(j['startDate'])
+                    j['endDate'] = get_correct_date(j['endDate'])
+
+                session.add(
+                    Archive(
+                        class_id=i[-1],
+                        major_id=j['id'],
+                        info=json.dumps(j, ensure_ascii=False)
+                    )
+                )
+
     session.commit()
     session.close()
 
