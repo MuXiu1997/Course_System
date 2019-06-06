@@ -10,6 +10,9 @@ from flask_cors import CORS
 
 from models import *
 
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+
 # import time
 
 logging.basicConfig(level=logging.DEBUG)
@@ -146,10 +149,53 @@ def post_table_data():
                     )
                 )
 
+    if 1:
+        wb = Workbook()  # 创建文件对象
+        ws = wb.active  # 获取第一个sheet
+        align = Alignment(horizontal='center', vertical='center')
+
+        def _cell(row, col, ws=ws):
+            return ws.cell(row=row, column=col)
+
+        def put_major():
+            i_ = 2
+            for each_major in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
+                _cell(1, i_).value = each_major.title
+                _cell(1, i_).alignment = align
+                i_ += 1
+
+        def put_class():
+            i_ = 2
+            for each_class in session.query(ClassName).filter_by(is_show=True).all():
+                ws.merge_cells(start_row=i_, start_column=1, end_row=i_ + 3, end_column=1)
+                _cell(i_, 1).value = each_class.class_name
+                _cell(i_, 1).alignment = align
+                i_ += 5
+
+        row_i, col_i = 2, 2
+        for i in table_data:
+            for j in i:
+                if isinstance(j, dict):
+                    _cell(row_i, col_i).value = '开始时间：%s' % get_correct_date(j['startDate'])[:10]
+                    _cell(row_i + 1, col_i).value = '结束时间：%s' % get_correct_date(j['endDate'])[:10]
+                    _cell(row_i + 2, col_i).value = '周    期：%s' % j['duration']
+                    _cell(row_i + 3, col_i).value = '讲    师：%s' % j['teacher']
+                    ws.column_dimensions[_cell(row_i, col_i).column_letter].width = 25
+                col_i += 1
+            row_i += 5
+            col_i = 2
+
+        ws.column_dimensions['A'].width = 12
+
+        put_major()
+        put_class()
+        wb.save('a.xlsx')
+
     session.commit()
     session.close()
 
-    return Response(status=200)
+    return Response(response=open('a.xlsx', mode='rb'), status=200,
+                    mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 
 @app.route('/api/POST/new-class', methods=['POST'])
