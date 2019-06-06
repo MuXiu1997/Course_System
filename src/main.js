@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
-import store from './store'
+// import router from './router'
+// import store from './store'
 
 import './axios'
 
@@ -12,7 +12,8 @@ import {
   Option,
   Drawer,
   Modal,
-  Input
+  Input,
+  Spin
 } from 'iview'
 import 'iview/dist/styles/iview.css'
 
@@ -26,13 +27,14 @@ Vue.component('Option', Option)
 Vue.component('Drawer', Drawer)
 Vue.component('Modal', Modal)
 Vue.component('Input', Input)
+Vue.component('Spin', Spin)
 
 Vue.use(InputNumber)
 
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  store,
+  // router,
+  // store,
   render: h => h(App)
 }).$mount('#app')

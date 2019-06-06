@@ -1,41 +1,25 @@
 <template>
   <div id="app">
-    <router-view/>
+<!--    <router-view/>-->
+    <Home/>
   </div>
 </template>
 
+<script>
+import Home from './views/Home'
+export default {
+  components: { Home }
+}
+
+</script>
+
 <style lang="scss">
-  /*body {*/
-  /*      margin: 0;*/
-  /*      padding: 0;*/
-  /*      overflow: hidden !important;*/
-  /*    }*/
+  body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden !important;
+      }
 
-  /*#app {*/
-  /*  font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
-  /*  -webkit-font-smoothing: antialiased;*/
-  /*  -moz-osx-font-smoothing: grayscale;*/
-  /*  text-align: center;*/
-  /*  color: #2c3e50;*/
-  /*}*/
-  /*#nav {*/
-  /*  padding: 30px;*/
-  /*  a {*/
-  /*    font-weight: bold;*/
-  /*    color: #2c3e50;*/
-  /*    &.router-link-exact-active {*/
-  /*      color: #42b983;*/
-  /*    }*/
-  /*  }*/
-  /*}*/
-  /*.ivu-input[disabled], fieldset[disabled] .ivu-input {*/
-  /*  background-color: #fff !important;*/
-  /*  color: #000 !important;*/
-  /*}*/
-
-  /*.el-input-number__decrease, .el-input-number__increase {*/
-  /*  background-color: #fff !important;*/
-  /*}*/
   .scrollStyle::-webkit-scrollbar {
     width: 9px;
     height: 9px;

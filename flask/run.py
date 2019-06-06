@@ -54,7 +54,6 @@ def get_workday_data():
     return jsonify({'isWorkdayData': workday_data})
 
 
-@app.route('/api/GET/columns-data')
 def get_columns_data():
     session = Session()
     columns_data = []
@@ -65,58 +64,21 @@ def get_columns_data():
             }
         )
     session.close()
-    return jsonify({'columnsData': columns_data})
+    return columns_data
 
 
-@app.route('/api/GET/options-data')
 def get_options_data():
     session = Session()
     options_data = []
 
-    for each_major in session.query(Major).all():
+    for each_major in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
         names = []
         for teacher in each_major.teacher:
             names.append(teacher.name)
         options_data.append(names)
 
     session.close()
-    return jsonify({'optionsData': options_data})
-
-
-@app.route('/api/GET/duration-data')
-def get_duration_data():
-    session = Session()
-    duration_data = []
-
-    for each_major in session.query(Major).all():
-        duration_data.append(each_major.duration)
-
-    session.close()
-    return jsonify({'optionsData': duration_data})
-
-
-@app.route('/api/POST/table-data', methods=['POST'])
-def post_table_data():
-    session = Session()
-
-    table_data = request.json.get('tableData')
-
-    for i in table_data:
-        for j in i:
-            if isinstance(j, dict):
-                old_obj = session.query(Archive).filter_by(class_id=i[-1], major_id=j['id']).first()
-                if old_obj:
-                    session.delete(old_obj)
-                    j['startDate'] = j['startDate'][:8] + str((int(j['startDate'][8:10])) + 1) + j['startDate'][10:]
-                    j['endDate'] = j['endDate'][:8] + str((int(j['endDate'][8:10]) + 1)) + j['endDate'][10:]
-                session.add(Archive(class_id=i[-1],
-                                    major_id=j['id'],
-                                    info=json.dumps(j, ensure_ascii=False))
-                            )
-    session.commit()
-    session.close()
-
-    return Response(status=200)
+    return options_data
 
 
 @app.route('/api/GET/table-data')
@@ -143,7 +105,35 @@ def get_table_data():
         a.append(i.class_name)
         a.append(i.id)
         table_data.append(a)
-    return jsonify({'tableData': table_data})
+
+    return jsonify({'tableData': table_data,
+                    'optionsData': get_options_data(),
+                    'columnsData': get_columns_data()
+                    })
+
+
+@app.route('/api/POST/table-data', methods=['POST'])
+def post_table_data():
+    session = Session()
+
+    table_data = request.json.get('tableData')
+
+    for i in table_data:
+        for j in i:
+            if isinstance(j, dict):
+                old_obj = session.query(Archive).filter_by(class_id=i[-1], major_id=j['id']).first()
+                if old_obj:
+                    session.delete(old_obj)
+                    j['startDate'] = j['startDate'][:8] + str((int(j['startDate'][8:10])) + 1) + j['startDate'][10:]
+                    j['endDate'] = j['endDate'][:8] + str((int(j['endDate'][8:10]) + 1)) + j['endDate'][10:]
+                session.add(Archive(class_id=i[-1],
+                                    major_id=j['id'],
+                                    info=json.dumps(j, ensure_ascii=False))
+                            )
+    session.commit()
+    session.close()
+
+    return Response(status=200)
 
 
 @app.route('/api/POST/new-class', methods=['POST'])

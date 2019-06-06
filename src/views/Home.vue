@@ -178,6 +178,17 @@
       <div style="height: 100px">
       </div>
     </div>
+    <Spin fix v-if="loading">
+        <i class="el-icon-loading"
+           style=
+             "font-size: 30px;
+             background-color: #fff;
+             color: rgba(45, 140, 240, 0.8);
+             z-index: 999999;"
+        >
+        </i>
+        <div style="color: rgba(45, 140, 240, 0.8);font-size: 16px">Loading...</div>
+    </Spin>
   </div>
 </template>
 
@@ -186,9 +197,9 @@ import { Notification } from 'element-ui'
 
 export default {
   name: 'home',
-  components: { Notification },
   data () {
     return {
+      loading: true,
       newClassName: '',
       modalKey: false,
       value1: false,
@@ -215,30 +226,24 @@ export default {
       .then(response => {
         this.isWorkdayData = response.data['isWorkdayData']
       })
-    this.$axios.get('/api/GET/columns-data')
-      .then(response => {
-        this.columnsData = response.data['columnsData']
-      })
-    this.$axios.get('/api/GET/options-data')
-      .then(response => {
-        this.optionsData = response.data['optionsData']
-      })
   },
-  // mounted () {
-  //   // 获取浏览器可视区域高度宽度
-  //   this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
-  //   this.clientWidth = `${document.documentElement.clientWidth}` - 1
+  mounted () {
+  // // 获取浏览器可视区域高度宽度
+  // this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
+  // this.clientWidth = `${document.documentElement.clientWidth}` - 1
+  // // console.log(this.clientWidth)
+  // let _this = this
+  // window.onresize = function temp () {
+  //   _this.clientHeight = `${document.documentElement.clientHeight}` - 1
+  //   _this.clientWidth = `${document.documentElement.clientWidth}` - 1
   //   // console.log(this.clientWidth)
-  //   let _this = this
-  //   window.onresize = function temp () {
-  //     _this.clientHeight = `${document.documentElement.clientHeight}` - 1
-  //     _this.clientWidth = `${document.documentElement.clientWidth}` - 1
-  //     // console.log(this.clientWidth)
-  //   }
-  //   this.$nextTick(() => {
-  //     this.duplicateChecking()
-  //   })
-  // },
+  // }
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.loading = false
+      }, 500)
+    })
+  },
   methods: {
     createNewClass () {
       this.$axios.post('/api/POST/new-class', {
@@ -285,6 +290,8 @@ export default {
       })
         .then(response => {
           this.tableData = response.data['tableData']
+          this.columnsData = response.data['columnsData']
+          this.optionsData = response.data['optionsData']
         })
     },
     // #################################################################################################################
