@@ -1,46 +1,53 @@
 <template>
   <div class="home" style="position: fixed;top: 0;right: 0;bottom: 0;left: 0">
-    <i class="el-icon-edit-outline asdasd"
-       @click="save()"
-       style=
-         "position: fixed;
-             padding: 5px;
-             right: 10px;
-             bottom: 10px;
-             font-size: 30px;
-             background-color: #fff;
-             color: rgba(45, 140, 240, 0.1);
-             border-radius: 20%;
-             border: 2px rgba(45, 140, 240, 0.1) solid;
-             z-index: 10000;"
-    ></i>
-    <i class="el-icon-circle-plus-outline asdasd"
+
+    <!--加载界面-->
+    <Spin fix v-if="loading">
+      <i class="el-icon-loading"
+         style=
+           "font-size: 30px;
+           background-color: #fff;
+           color: rgba(45, 140, 240, 0.8);
+           z-index: 999999;"
+      >
+      </i>
+      <div style="color: rgba(45, 140, 240, 0.8);font-size: 16px">Loading...</div>
+    </Spin>
+
+    <!--三个图标-->
+    <i class="el-icon-folder-checked"
+       @click="save(false)"
+       style="right: 10px;"
+    >
+    </i>
+    <i class="el-icon-download"
+       @click="save(true)"
+       style="right: 60px;"
+    >
+    </i>
+    <i class="el-icon-circle-plus-outline"
        @click="modalKey = true"
-       style=
-         "position: fixed;
-             padding: 5px;
-             right: 60px;
-             bottom: 10px;
-             font-size: 30px;
-             background-color: #fff;
-             color: rgba(45, 140, 240, 0.1);
-             border-radius: 20%;
-             border: 2px rgba(45, 140, 240, 0.1) solid;
-             z-index: 10000;">
+       style="right: 110px;"
+    >
     </i>
     <!--    <Drawer title="Basic Drawer" :closable="false" v-model="value1" transfer>-->
     <!--      <p>Some contents...</p>-->
     <!--      <p>Some contents...</p>-->
     <!--      <p>Some contents...</p>-->
     <!--    </Drawer>-->
+
+    <!--新建班级对话框-->
     <Modal
       v-model="modalKey"
       title="新建班级"
       @on-ok="createNewClass()"
       @on-cancel="modalKey = false"
-      style="text-align: center">
+      style="text-align: center"
+    >
       <label>班级名：<Input v-model="newClassName" placeholder="请输入班级名" clearable style="width: 200px"/></label>
     </Modal>
+
+    <!--左上角固定位置-->
     <div style="width: 140px;height: 57px;position: fixed;top: 0;left: 0;padding-top: 4px;padding-left: 20px">
       <div style="height: 53px;
              line-height: 50px;
@@ -50,17 +57,20 @@
         <span style="font-size: 16px">班次</span>
       </div>
     </div>
+
+    <!--列首-->
     <div style=
            "position: absolute;
            top: 57px;
            bottom: 0;
            left: 0;
            overflow: auto;"
-         id="ccccccc"
-         ref="ccccccc"
+         id="firstColumn"
+         ref="firstColumn"
     >
-      <div v-for="(v,rowIndex) in tableData" :key="''+v+rowIndex"
-           style="width: 140px;height: 204px;padding-left: 20px;background-color: white;z-index: 100000">
+      <div v-for="(row,rowIndex) in tableData" :key="''+row+rowIndex"
+           style="width: 140px;height: 204px;padding-left: 20px;background-color: white;z-index: 100000"
+      >
         <div style="
              text-align: center;
              line-height: 200px;
@@ -68,14 +78,15 @@
              border-bottom: 1px solid #dee2e6;
              border-right: 1px solid #dee2e6;
              background-color: white;
-             z-index: 100000
-             ">
-          {{ v[columnsData.length] }}
+             z-index: 100000"
+        >
+          {{ row[columnsData.length] }}
         </div>
       </div>
       <div style="height: 200px">
       </div>
     </div>
+    <!--表头-->
     <div style=
            "position: absolute;
            top: 0;
@@ -86,8 +97,8 @@
            overflow: auto;
            height: 57px;
            z-index: 100;"
-         id="aaaaaaa"
-         ref="aaaaaaa"
+         id="tableHead"
+         ref="tableHead"
     >
       <div v-for="col in columnsData"
            :key="col.title"
@@ -106,22 +117,23 @@
 
       </div>
     </div>
+    <!--table-->
     <div style="position: absolute;top: 56px;right: 0;bottom: 0;left: 140px;overflow: auto"
          class="scrollStyle"
-         ref="bbbbbbbb"
-         @scroll="sssss()"
+         ref="tableMain"
+         @scroll="linkScroll()"
     >
-      <div v-for="(v,rowIndex) in tableData" :key="''+v+rowIndex"
+      <div v-for="(row,rowIndex) in tableData" :key="''+row+rowIndex"
            style="white-space:nowrap;">
-        <div v-for="(v,colIndex) in columnsData" :key="''+v+colIndex"
+        <div v-for="(col,colIndex) in columnsData" :key="''+col+colIndex"
              style="display: inline-block;padding: 2px;width: 304px;height: 204px;border-bottom: 1px solid #dee2e6;">
           <div style="padding: 20px 18px;border-radius: 2.5%;"
                :class="{
-              'duplicate':isDuplicate(rowIndex,colIndex),
-              'currentDuplicate':isCurrentDuplicate(rowIndex,colIndex),
-              'current':isCurrent(rowIndex,colIndex) && isDuplicate(rowIndex,colIndex),
-             'date':true
-             }"
+                 'duplicate':isDuplicate(rowIndex,colIndex),
+                 'currentDuplicate':isCurrentDuplicate(rowIndex,colIndex),
+                 'current':isCurrent(rowIndex,colIndex) && isDuplicate(rowIndex,colIndex),
+                 'date':true
+               }"
                @mouseover="mouseover(rowIndex,colIndex)"
           >
             <div>
@@ -146,7 +158,6 @@
                 disabled
                 v-model="tableData[rowIndex][colIndex].endDate"
                 style="width: 200px">
-
               </DatePicker>
             </div>
             <div>
@@ -172,23 +183,11 @@
           </div>
         </div>
         <div style="width: 20px;display: inline-block">
-
         </div>
       </div>
       <div style="height: 100px">
       </div>
     </div>
-    <Spin fix v-if="loading">
-        <i class="el-icon-loading"
-           style=
-             "font-size: 30px;
-             background-color: #fff;
-             color: rgba(45, 140, 240, 0.8);
-             z-index: 999999;"
-        >
-        </i>
-        <div style="color: rgba(45, 140, 240, 0.8);font-size: 16px">Loading...</div>
-    </Spin>
   </div>
 </template>
 
@@ -228,16 +227,6 @@ export default {
       })
   },
   mounted () {
-  // // 获取浏览器可视区域高度宽度
-  // this.clientHeight = `${document.documentElement.clientHeight}` - 1// document.body.clientWidth;
-  // this.clientWidth = `${document.documentElement.clientWidth}` - 1
-  // // console.log(this.clientWidth)
-  // let _this = this
-  // window.onresize = function temp () {
-  //   _this.clientHeight = `${document.documentElement.clientHeight}` - 1
-  //   _this.clientWidth = `${document.documentElement.clientWidth}` - 1
-  //   // console.log(this.clientWidth)
-  // }
     this.$nextTick(() => {
       setTimeout(() => {
         this.loading = false
@@ -253,40 +242,53 @@ export default {
           this.tableData.push(response.data['newClass'])
         })
     },
-    sssss () {
-      this.$refs.aaaaaaa.scrollLeft = this.$refs.bbbbbbbb.scrollLeft
-      this.$refs.ccccccc.scrollTop = this.$refs.bbbbbbbb.scrollTop
+    linkScroll () {
+      this.$refs.tableHead.scrollLeft = this.$refs.tableMain.scrollLeft
+      this.$refs.firstColumn.scrollTop = this.$refs.tableMain.scrollTop
     },
-    save () {
-      // console.log(this.tableData)
+    save (isXlsx) {
       this.$axios.post('/api/POST/table-data', {
-        'tableData': this.tableData
+        'tableData': this.tableData,
+        'isXlsx': isXlsx
       })
         .then(response => {
-          // console.log(response.status)
-          if (response.status === 200) {
-            Notification({
-              title: 'success',
-              message: '保存成功',
-              type: 'success'
-            })
+          console.log(response.status)
+          if (isXlsx) {
+            if (response.status === 200) {
+              location.href = 'http://192.168.0.66:5000/xlsx/' + response.data['fileName']
+            } else {
+              Notification({
+                title: 'error',
+                message: '获取文件失败',
+                type: 'error'
+              })
+            }
           } else {
-            Notification({
-              title: 'error',
-              message: '保存失败',
-              type: 'error'
-            })
+            if (response.status === 200) {
+              Notification({
+                title: 'success',
+                message: '保存成功',
+                type: 'success'
+              })
+            } else {
+              Notification({
+                title: 'error',
+                message: '保存失败',
+                type: 'error'
+              })
+            }
           }
         })
         .catch(error => {
           console.log(error)
         })
     },
-    load (_time) {
+    // load (_time) {
+    load () {
       this.$axios.get('/api/GET/table-data', {
-        params: {
-          time: _time
-        }
+        // params: {
+        //   time: _time
+        // }
       })
         .then(response => {
           this.tableData = response.data['tableData']
@@ -324,10 +326,11 @@ export default {
         this.calculationEndDate(rowArray, colIndex)
       } else {
         // console.log(765566)
-        // this.duplicateChecking()
+        this.duplicateChecking()
       }
     },
     // #################################################################################################################
+    // 重复单元格增加class
     isDuplicate (rowIndex, colIndex) {
       return this.tableData[rowIndex][colIndex].conflictArray.length > 0
     },
@@ -345,7 +348,6 @@ export default {
     },
     // #################################################################################################################
     duplicateChecking () {
-      // console.log(123)
       for (let i = 0; i < this.tableData.length; i++) {
         for (let j = 0; j < this.columnsData.length; j++) {
           this.tableData[i][j].conflictArray = []

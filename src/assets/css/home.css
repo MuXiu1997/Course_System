@@ -45,15 +45,27 @@
   padding: 16px;
 }
 
-#aaaaaaa::-webkit-scrollbar {
+#tableHead::-webkit-scrollbar {
   display: none !important;
 }
 
-#ccccccc::-webkit-scrollbar {
+#firstColumn::-webkit-scrollbar {
   display: none !important;
 }
 
-.asdasd:hover {
+.home > i {
+  position: fixed;
+  padding: 5px;
+  bottom: 10px;
+  font-size: 30px;
+  background-color: #fff;
+  color: rgba(45, 140, 240, 0.1);
+  border-radius: 20%;
+  border: 2px rgba(45, 140, 240, 0.1) solid;
+  z-index: 10000;
+}
+
+.home > i:hover {
   color: rgba(45, 140, 240, 1) !important;
   border: 2px rgba(45, 140, 240, 1) solid !important;
 }

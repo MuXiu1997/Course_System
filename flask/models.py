@@ -21,13 +21,6 @@ association_table = Table('association', Base.metadata,
                           )
 
 
-# archive_table = Table('Archive', Base.metadata,
-#                       Column('class_id', Integer, ForeignKey('class_name.id')),
-#                       Column('major_id', Integer, ForeignKey('major.id')),
-#                       Column('info', String)
-#                       )
-
-
 # 老师
 class Teacher(Base):
     __tablename__ = 'teacher'
@@ -53,7 +46,7 @@ class Major(Base):
     def __repr__(self):
         return self.title
 
-
+# 班级
 class ClassName(Base):
     __tablename__ = 'class_name'
 
@@ -62,13 +55,12 @@ class ClassName(Base):
     is_show = Column(Boolean(), default=True)
 
 
-# 存档 暂时未用
+# 存档
 class Archive(Base):
     __tablename__ = 'archive'
 
-    id = Column(Integer(), primary_key=True, autoincrement=True)
-    class_id = Column(Integer())
-    major_id = Column(Integer())
+    class_id = Column(Integer(), primary_key=True)
+    major_id = Column(Integer(), primary_key=True)
     info = Column(String())
 
 
