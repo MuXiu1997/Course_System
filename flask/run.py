@@ -1,6 +1,5 @@
 import datetime
 import json
-import logging
 import uuid
 
 import requests
@@ -14,10 +13,6 @@ from openpyxl.styles import Alignment
 from models import *
 
 # import time
-
-logging.basicConfig(level=logging.DEBUG)
-
-HUA_JI = False
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})  # 使前端能从后端拿到数据
@@ -105,10 +100,11 @@ def get_table_data():
 
     session.close()
     columns_data, options_data = get_columns_options_data()
-    return jsonify({'tableData': table_data,
-                    'columnsData': columns_data,
-                    'optionsData': options_data
-                    })
+    return jsonify({
+        'tableData': table_data,
+        'columnsData': columns_data,
+        'optionsData': options_data
+    })
 
 
 ########################################################################################################################
@@ -133,30 +129,30 @@ def get_xlsx(table_data, session):
         return _ws.cell(row=row, column=col)
 
     def put_major():
-        i_ = 2
+        index = 2
         for each_major in session.query(Major).filter_by(is_show=True).order_by(Major.order).all():
-            _cell(1, i_).value = each_major.title
-            _cell(1, i_).alignment = align
-            i_ += 1
+            _cell(1, index).value = each_major.title
+            _cell(1, index).alignment = align
+            index += 1
 
     def put_class():
-        i_ = 2
+        index = 2
         for each_class in session.query(ClassName).filter_by(is_show=True).all():
-            work_sheet.merge_cells(start_row=i_, start_column=1, end_row=i_ + 3, end_column=1)
-            _cell(i_, 1).value = each_class.class_name
-            _cell(i_, 1).alignment = align
-            i_ += 5
+            work_sheet.merge_cells(start_row=index, start_column=1, end_row=index + 3, end_column=1)
+            _cell(index, 1).value = each_class.class_name
+            _cell(index, 1).alignment = align
+            index += 5
 
     row_i, col_i = 2, 2
-    for i in table_data:
-        for j in i:
-            if isinstance(j, dict):
-                _cell(row_i, col_i).value = '开始时间：%s' % get_correct_date(j['startDate'])[:10] \
-                    if j['startDate'] else '开始时间：'
-                _cell(row_i + 1, col_i).value = '结束时间：%s' % get_correct_date(j['endDate'])[:10] \
-                    if j['endDate'] else '结束时间：'
-                _cell(row_i + 2, col_i).value = '周    期：%s' % j['duration']
-                _cell(row_i + 3, col_i).value = '讲    师：%s' % j['teacher']
+    for row in table_data:
+        for col in row:
+            if isinstance(col, dict):
+                _cell(row_i, col_i).value = '开始时间：%s' % get_correct_date(col['startDate'])[:10] \
+                    if col['startDate'] else '开始时间：'
+                _cell(row_i + 1, col_i).value = '结束时间：%s' % get_correct_date(col['endDate'])[:10] \
+                    if col['endDate'] else '结束时间：'
+                _cell(row_i + 2, col_i).value = '周    期：%s' % col['duration']
+                _cell(row_i + 3, col_i).value = '讲    师：%s' % col['teacher']
                 work_sheet.column_dimensions[_cell(row_i, col_i).column_letter].width = 25
             col_i += 1
         row_i += 5

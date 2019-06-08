@@ -255,7 +255,7 @@ export default {
           console.log(response.status)
           if (isXlsx) {
             if (response.status === 200) {
-              location.href = 'http://192.168.0.66:5000/xlsx/' + response.data['fileName']
+              location.href = '/xlsx/' + response.data['fileName']
             } else {
               Notification({
                 title: 'error',
