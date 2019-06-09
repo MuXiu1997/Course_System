@@ -3,7 +3,7 @@ import json
 import uuid
 
 import requests
-from flask import Flask, jsonify, Response, request
+from flask import Flask, jsonify, Response, request, make_response
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
@@ -29,25 +29,13 @@ def get_workday_data():
     """
     api:获取工作日表
     """
-    year = request.args.get("year", "2019")
-    filename = year + 'workday_data.json'
-    workday_data = dict()
-
     try:
-        with open(filename) as file_obj:
-            workday_data = json.load(file_obj)
-
-    except FileNotFoundError:
-        url = 'http://www.mxnzp.com/api/holiday/list/year/' + year
-        request_api_text = requests.get(url).text
-        request_api_json = json.loads(request_api_text)
-        for each_month in request_api_json['data']:
-            for each_day in each_month['days']:
-                workday_data[each_day['date']] = each_day['typeDes'] == '工作日'
-        with open(filename, 'w', encoding='utf8') as api_file_obj:
-            json.dump(workday_data, api_file_obj, ensure_ascii=False)
-
-    return jsonify({'isWorkdayData': workday_data})
+        file_obj = open('workday_data.json')
+        workday_data = json.load(file_obj)
+        file_obj.close()
+        return jsonify({'isWorkdayData': workday_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
 
 
 ########################################################################################################################

@@ -216,12 +216,7 @@ export default {
   },
   created () {
     this.load()
-    let date = new Date()
-    this.$axios.get('/api/GET/workday-data', {
-      params: {
-        year: date.getFullYear()
-      }
-    })
+    this.$axios.get('/api/GET/workday-data')
       .then(response => {
         this.isWorkdayData = response.data['isWorkdayData']
       })
@@ -361,9 +356,9 @@ export default {
               let obj2 = this.tableData[x][y]
 
               if (obj1.endDate && obj2.endDate && obj1.teacher && obj2.teacher) {
-                // console.log(obj1.startDate.valueOf(), obj2.startDate.valueOf())
                 if (obj1.teacher === obj2.teacher) {
-                  if (obj2.startDate.valueOf() <= obj1.endDate.valueOf()) { // 逻辑仍需补充
+                  if (obj1.startDate.valueOf() <= obj2.endDate.valueOf() &&
+                    obj1.endDate.valueOf() >= obj2.startDate.valueOf()) {
                     obj1.conflictArray.push('' + x + ',' + y)
                     obj2.conflictArray.push('' + i + ',' + j)
                     // console.log(obj1, obj2)
