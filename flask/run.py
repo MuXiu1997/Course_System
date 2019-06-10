@@ -2,8 +2,7 @@ import datetime
 import json
 import uuid
 
-import requests
-from flask import Flask, jsonify, Response, request, make_response
+from flask import Flask, jsonify, Response, request
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
@@ -30,10 +29,12 @@ def get_workday_data():
     api:获取工作日表
     """
     try:
-        file_obj = open('workday_data.json')
-        workday_data = json.load(file_obj)
+        file_obj = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'workday_data.json'))
+        file_obj_r = file_obj.read()
         file_obj.close()
+        workday_data = json.loads(file_obj_r)
         return jsonify({'isWorkdayData': workday_data})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
@@ -113,8 +114,8 @@ def get_xlsx(table_data, session):
     work_sheet = work_book.active  # 获取第一个sheet
     align = Alignment(horizontal='center', vertical='center')
 
-    def _cell(row, col, _ws=work_sheet):
-        return _ws.cell(row=row, column=col)
+    def _cell(_row, _col, _ws=work_sheet):
+        return _ws.cell(row=_row, column=_col)
 
     def put_major():
         index = 2
