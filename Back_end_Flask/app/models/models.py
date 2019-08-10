@@ -1,8 +1,9 @@
+import json
 import os
 
 from sqlalchemy import create_engine, Column, String, Integer, Table, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, backref
 
 db_file_name = 'course_system.db'  # SQLite文件名
 path = os.path.abspath(__file__)  # 当前文件路径
@@ -14,20 +15,21 @@ Base = declarative_base()  # 建立基本映射类，用于继承
 Session = sessionmaker(bind=engine)  # 创建CRUD的会话类
 # session = Session()  # Session类实例化
 
-association_table = Table('association', Base.metadata,
-                          Column('id', Integer, primary_key=True, autoincrement=True),
-                          Column('teacher_id', Integer, ForeignKey('teacher.id')),
-                          Column('major_id', Integer, ForeignKey('major.id'))
-                          )
+# 教师与课程 多对多关联表
+association_table = Table(
+    'association', Base.metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('teacher_id', Integer, ForeignKey('teacher.id', ondelete='CASCADE')),
+    Column('major_id', Integer, ForeignKey('major.id', ondelete='CASCADE'))
+)
 
 
-# 老师
+# 教师
 class Teacher(Base):
     __tablename__ = 'teacher'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     name = Column(String())
-    major = relationship('Major', secondary=association_table, backref='teacher')
 
     def __repr__(self):
         return self.name
@@ -43,8 +45,23 @@ class Major(Base):
     order = Column(Integer(), unique=True)
     is_show = Column(Boolean(), default=True)
 
+    teacher = relationship(
+        'Teacher', secondary=association_table, lazy='dynamic',
+        backref=backref('major', lazy='dynamic'),
+        cascade='delete, delete-orphan', single_parent=True,
+    )
+
     def __repr__(self):
         return self.title
+
+    @property
+    def info(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'options': [teacher.name for teacher in self.teacher],
+            'duration': self.duration
+        }
 
 
 # 班级
@@ -54,6 +71,13 @@ class ClassName(Base):
     id = Column(Integer(), primary_key=True, autoincrement=True)
     class_name = Column(String())
     is_show = Column(Boolean(), default=True)
+
+    @property
+    def info(self):
+        return {
+            'id': self.id,
+            'className': self.class_name,
+        }
 
 
 # 存档
