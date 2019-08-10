@@ -8,15 +8,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'schedule',
       meta: { login: true },
-      component: () => import(/* webpackChunkName: "home" */'./views/Home.vue')
+      component: () => import(/* webpackChunkName: "schedule" */'@/views/Schedule/index')
     },
     {
       path: '/login',
       name: '/login',
       meta: { login: false },
-      component: () => import(/* webpackChunkName: "login" */'./views/Login.vue')
+      component: () => import(/* webpackChunkName: "login" */'@/views/Login.vue')
     }
   ]
 })
