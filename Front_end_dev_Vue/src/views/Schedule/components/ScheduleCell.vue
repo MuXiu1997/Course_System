@@ -47,12 +47,13 @@
       <div class="cell">
         <label>
           讲&emsp;&emsp;师：
-          <el-select v-model="col.teacher"
-                     clearable
-                     popper-append-to-body
-                     placeholder="请选择"
-                     size="mini"
-                     @change="CheckHandler"
+          <el-select
+            v-model="col.teacher"
+            clearable
+            popper-append-to-body
+            placeholder="请选择"
+            size="mini"
+            @change="CheckHandler"
           >
             <el-option
               v-for="option in options"

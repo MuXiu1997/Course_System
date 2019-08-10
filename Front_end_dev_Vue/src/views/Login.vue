@@ -1,57 +1,85 @@
+<!--suppress JSUnusedGlobalSymbols, HtmlUnknownTarget -->
 <template>
-  <div
-    style="background-color: rgba(64, 158, 255, 1);position: fixed;top: 0;right: 0;bottom: 0;left: 0">
-    <Card shadow
-          style=
-            "display: inline-block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            text-align: center;"
+  <div class="full">
+    <img src="@/assets/background.jpg" alt="" class="background">
+    <el-card
+      class="card"
+      shadow="hover"
     >
-      <Form ref="form" :model="form" :rules="rule">
-        <FormItem prop="user">
-          <label>
-            <Input type="text" v-model="form.userName" placeholder="Username">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </label>
-        </FormItem>
-        <FormItem prop="password">
-          <label>
-            <Input type="password" v-model="form.password" @on-enter="handleSubmit('form')" placeholder="Password">
-              <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </label>
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSubmit('form')">SignIn</Button>
-        </FormItem>
-      </Form>
-    </Card>
+
+      <div
+        slot="header"
+        class="card-header"
+      >
+        欢迎登陆百知课程管理系统
+      </div>
+      <div>
+        <el-form
+          ref="form"
+          :model="form"
+          label-position="right"
+          label-width="80px"
+          hide-required-asterisk
+        >
+          <el-form-item
+            label="用户名："
+            prop="userName"
+            :rules="[{ required: true, message: '请输入用户名', trigger: ['blur', 'change'] }]"
+          >
+            <el-autocomplete
+              class="form-input"
+              placeholder="请输入用户名"
+              :fetch-suggestions="(queryString, cb)=>{cb([{ value: 'python'}])}"
+              prefix-icon="el-icon-user"
+              placement="top-start"
+              v-model="form.userName">
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item
+            label="密码："
+            prop="password"
+            :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
+          >
+            <el-input
+              class="form-input"
+              placeholder="请输入密码"
+              show-password
+              prefix-icon="el-icon-lock"
+              @keydown.native.enter="submitHandler"
+              v-model="form.password">
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              @click="submitHandler"
+              class="button button-left"
+            >
+              登陆
+            </el-button>
+            <el-button
+              @click="resetFields"
+              class="button">
+              重置
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script>
-import { Notification } from 'element-ui'
-import {
-  Input,
-  Form,
-  FormItem,
-  Button,
-  Icon,
-  Card
-} from 'iview'
+import { Notification, Card, Form, FormItem, Input, Autocomplete, Button } from 'element-ui'
+
 export default {
   name: 'Login',
   components: {
-    'Input': Input,
-    'Form': Form,
-    'FormItem': FormItem,
-    'Button': Button,
-    'Icon': Icon,
-    'Card': Card
+    'el-autocomplete': Autocomplete,
+    'el-input': Input,
+    'el-form': Form,
+    'el-form-item': FormItem,
+    'el-button': Button,
+    'el-card': Card
   },
   data () {
     return {
@@ -71,8 +99,11 @@ export default {
     }
   },
   methods: {
-    handleSubmit (name) {
-      this.$refs[name].validate((valid) => {
+    resetFields () {
+      this.$refs['form'].resetFields()
+    },
+    submitHandler () {
+      this.$refs['form'].validate((valid) => {
         if (valid) {
           this.submit()
         } else {
@@ -91,7 +122,7 @@ export default {
           this.$cookie.set('Token', response.data.token, 1)
           this.$store.dispatch('setToken', response.data.token)
             .then(() => {
-              this.$router.push({ path: '/' })
+              this.$router.push({ path: '/schedule' })
             })
         })
         .catch(error => {
@@ -100,8 +131,7 @@ export default {
             message: '用户名或密码有误',
             type: 'error'
           })
-          this.form.userName = ''
-          this.form.password = ''
+          this.resetFields()
           console.log(error)
         })
     }
@@ -110,4 +140,52 @@ export default {
 </script>
 
 <style scoped>
+  .full {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .background {
+    min-width: 100%;
+    min-height: 100%
+  }
+
+  .card {
+    width: 400px;
+    position: fixed;
+    right: 160px;
+    top: 50%;
+    transform: translate(0, -50%);
+    background-color: rgba(0, 0, 0, 0)
+  }
+
+  .card-header {
+    text-align: center;
+    font-size: x-large;
+  }
+
+  .card /deep/ * {
+    color: white;
+  }
+
+  .form-input {
+    width: 240px;
+    background-color: rgba(0, 0, 0, 0)
+  }
+
+  .form-input /deep/ div, .form-input /deep/ input {
+    background-color: rgba(0, 0, 0, 0)
+  }
+
+  .button {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .button-left {
+    margin-right: 50px;
+  }
+
 </style>

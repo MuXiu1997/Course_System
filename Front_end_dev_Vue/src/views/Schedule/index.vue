@@ -1,6 +1,6 @@
-<!--suppress CssUnusedSymbol -->
+<!--suppress CssUnusedSymbol, JSUnusedGlobalSymbols -->
 <template>
-  <div class="schedule">
+  <div class="schedule" v-show="show">
 
     <!--四个图标-->
     <i class="el-icon-folder-checked i-button"
@@ -33,12 +33,13 @@
       center>
       <el-input
         placeholder="请输入班级名"
+        v-model="newClassName"
+        @keydown.native.enter="createNewClass"
         prefix-icon="el-icon-edit-outline">
-
       </el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="createNewClass()">确 定</el-button>
+        <el-button type="primary" @click="createNewClass">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -110,7 +111,6 @@
             @change="calcDate(row, colIndex)"
             @check="checkDuplicate"
             @mouseenter.native="enterCurrentDuplicate(col,`${rowIndex}-${colIndex}`)"
-            @mouseleave.native="leaveCurrentDuplicate(col,`${rowIndex}-${colIndex}`)"
             :options="table.headersAndOptions[colIndex].options"
             :ref="`${rowIndex}-${colIndex}`"
           >
@@ -136,7 +136,6 @@ import ScheduleCell from './components/ScheduleCell.vue'
 
 import { setWorkdayData, calculationDate, duplicateChecking } from './modules/dateCalc.js'
 
-// noinspection JSUnusedGlobalSymbols
 export default {
   name: 'Schedule',
   components: {
@@ -147,10 +146,17 @@ export default {
   },
   data () {
     return {
+      show: false,
+
       newClassName: '',
       dialogVisible: false,
 
       currentEdit: '',
+
+      tempEnter: {
+        col: null,
+        ref: null
+      },
 
       // table初始默认数据
       table: {
@@ -197,9 +203,11 @@ export default {
       .then(response => {
         this.table = response.data
       })
+    this.checkDuplicate()
     this.$nextTick(() => {
       setTimeout(() => {
         loading.close()
+        this.show = true
       }, 500)
     })
   },
@@ -210,22 +218,33 @@ export default {
     toAdmin () {
       location.href = '/admin'
     },
-    createNewClass () {
-      this.dialogVisible = false
-      this.$axios.post(`/api/schedules/${this.newClassName}`, {})
-        .then(response => {
-          this.schedulesData.push(response.data['newClass'])
-        })
-    },
     // 滚动条联动
     linkScroll () {
       this.$refs.tableHeader.scrollLeft = this.$refs.tableMain.scrollLeft
       this.$refs.firstColumn.scrollTop = this.$refs.tableMain.scrollTop
     },
+    createNewClass () {
+      this.dialogVisible = false
+      this.$axios.post(`/api/schedules/${this.newClassName}`, {})
+        .then(response => {
+          this.table = response.data
+          Notification({
+            title: 'success',
+            message: '班级添加成功',
+            type: 'success'
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          Notification({
+            title: 'error',
+            message: '添加失败',
+            type: 'error'
+          })
+        })
+    },
     save () {
-      this.$axios.post('/api/schedules', {
-        'schedulesData': this.schedulesData
-      })
+      this.$axios.post('/api/schedules', this.table)
         .then(() => {
           Notification({
             title: 'success',
@@ -243,9 +262,7 @@ export default {
         })
     },
     getXlsx () {
-      this.$axios.post('/xlsx', {
-        'schedulesData': this.schedulesData
-      }, {
+      this.$axios.post('/xlsx', this.table, {
         responseType: 'blob'
       })
         .then((response) => {
@@ -286,6 +303,18 @@ export default {
     },
     // #################################################################################################################
     enterCurrentDuplicate (col, ref) {
+      if (col.conflictArray.length === 0) {
+        return
+      }
+      if (this.tempEnter.col && this.tempEnter.ref) {
+        if (this.tempEnter.col === col && this.tempEnter.ref === ref) {
+          return
+        } else {
+          this.leaveCurrentDuplicate(this.tempEnter.col, this.tempEnter.ref)
+        }
+      }
+      this.tempEnter.col = col
+      this.tempEnter.ref = ref
       this.$refs[ref][0].$el.classList.add('current')
       for (let i = 0; i < col.conflictArray.length; i++) {
         this.$refs[col.conflictArray[i]][0].$el.classList.add('currentDuplicate')

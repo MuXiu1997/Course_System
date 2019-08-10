@@ -24,6 +24,10 @@ function getNextWorkDay (startDate, duration) {
   while (duration !== 0) {
     dateObj.setDate(dateObj.getDate() + 1)
     dateStr = formatDate(dateObj)
+    if (typeof isWorkdayData[dateStr] === 'undefined') {
+      alert('工作日数据获取错误')
+      return
+    }
     if (isWorkdayData[dateStr]) {
       duration--
     }

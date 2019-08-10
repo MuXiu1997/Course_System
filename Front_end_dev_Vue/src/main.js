@@ -23,14 +23,14 @@ store.dispatch('setToken', token).then()
 
 router.beforeEach((to, from, next) => {
   if (store.getters.getToken) {
-    if (to.path === '/login') {
-      next({ path: '/' })
+    if (to.name === 'login') {
+      next({ name: 'schedule' })
     } else {
       next()
     }
   } else {
     if (to.meta.login) {
-      next('/login')
+      next({ name: 'login' })
     } else {
       next()
     }
