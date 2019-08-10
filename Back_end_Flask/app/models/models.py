@@ -1,4 +1,3 @@
-import json
 import os
 
 from sqlalchemy import create_engine, Column, String, Integer, Table, ForeignKey, Boolean
@@ -7,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, relationship, backref
 
 db_file_name = 'course_system.db'  # SQLite文件名
 path = os.path.abspath(__file__)  # 当前文件路径
-db_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), db_file_name)  # SQLite文件所在路径
+db_file_path = os.path.join(os.path.dirname(path), db_file_name)  # SQLite文件所在路径
 # sqlite默认建立的对象只能让建立该对象的线程使用，而sqlalchemy是多线程的
 # 所以我们需要指定check_same_thread=False来让建立的对象任意线程都可使用
 engine = create_engine('sqlite:///{}?check_same_thread=False'.format(db_file_path), echo=False)  # 创建数据库连接
