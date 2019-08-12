@@ -1,4 +1,4 @@
-<!--suppress JSUnusedGlobalSymbols, HtmlUnknownTarget -->
+<!--suppress JSUnusedGlobalSymbols, HtmlUnknownTarget, NpmUsedModulesInstalled -->
 <template>
   <div class="full">
     <img src="@/assets/background.jpg" alt="" class="background">
@@ -71,6 +71,8 @@
 <script>
 import { Notification, Card, Form, FormItem, Input, Autocomplete, Button } from 'element-ui'
 
+import { postToken } from '@/api'
+
 export default {
   name: 'Login',
   components: {
@@ -116,10 +118,11 @@ export default {
       })
     },
     submit () {
-      this.$axios.post('/api/sessions', this.form)
+      postToken(this.form)
         .then(response => {
-          console.log(response.data.token)
-          this.$cookie.set('Token', response.data.token, 1)
+          this.$cookie.set('userName', this.form.userName, 1)
+          this.$cookie.set('password', this.form.password, 1)
+          this.$cookie.set('token', response.data.token, 1)
           this.$store.dispatch('setToken', response.data.token)
             .then(() => {
               this.$router.push({ path: '/schedule' })

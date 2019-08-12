@@ -6,7 +6,7 @@ from flask import jsonify, Blueprint
 workday = Blueprint('workday', __name__)
 
 
-@workday.route("/api/workdays")
+@workday.route("/api/workdays/")
 def get_workday():
     try:
         json_file_name = 'workday_data.json'  # json文件名

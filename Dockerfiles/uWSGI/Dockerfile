@@ -14,6 +14,8 @@ RUN pip install uwsgi -i http://pypi.douban.com/simple --trusted-host pypi.douba
 
 RUN pip install sqlalchemy -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 
+RUN pip install pyjwt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+
 COPY ./uwsgi.ini /app/uwsgi.ini
 
 EXPOSE 5000

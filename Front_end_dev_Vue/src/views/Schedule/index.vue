@@ -1,4 +1,4 @@
-<!--suppress CssUnusedSymbol, JSUnusedGlobalSymbols -->
+<!--suppress CssUnusedSymbol, JSUnusedGlobalSymbols, NpmUsedModulesInstalled -->
 <template>
   <div class="schedule" v-show="show">
 
@@ -136,6 +136,8 @@ import ScheduleCell from './components/ScheduleCell.vue'
 
 import { setWorkdayData, calculationDate, duplicateChecking } from './modules/dateCalc.js'
 
+import { getWorkdays, getSchedules, postNewClassName, postSchedules, postXlsx } from '@/api'
+
 export default {
   name: 'Schedule',
   components: {
@@ -195,11 +197,11 @@ export default {
         lock: true
       }
     )
-    this.$axios.get('/api/workdays')
+    getWorkdays()
       .then(response => {
         setWorkdayData(response.data['isWorkdayData'])
       })
-    this.$axios.get('/api/schedules', {})
+    getSchedules()
       .then(response => {
         this.table = response.data
       })
@@ -225,7 +227,7 @@ export default {
     },
     createNewClass () {
       this.dialogVisible = false
-      this.$axios.post(`/api/schedules/${this.newClassName}`, {})
+      postNewClassName()
         .then(response => {
           this.table = response.data
           Notification({
@@ -244,7 +246,7 @@ export default {
         })
     },
     save () {
-      this.$axios.post('/api/schedules', this.table)
+      postSchedules()
         .then(() => {
           Notification({
             title: 'success',
@@ -262,9 +264,7 @@ export default {
         })
     },
     getXlsx () {
-      this.$axios.post('/xlsx', this.table, {
-        responseType: 'blob'
-      })
+      postXlsx()
         .then((response) => {
           let date = new Date()
           let blob = new Blob([response.data], { type: 'application/octet-stream' })

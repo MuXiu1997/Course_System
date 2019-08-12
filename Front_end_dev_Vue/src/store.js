@@ -8,7 +8,7 @@ export default new Vuex.Store({
     token: null
   },
   getters: {
-    getToken: state => {
+    getToken (state) {
       return state.token
     }
   },

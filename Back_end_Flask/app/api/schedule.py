@@ -1,4 +1,3 @@
-import datetime
 import json
 
 from flask import jsonify, Blueprint, request
@@ -8,7 +7,7 @@ from app.models import Major, Session, ClassName, Archive
 schedule = Blueprint('schedule', __name__)
 
 
-@schedule.route('/api/schedules')
+@schedule.route('/api/schedules/')
 def get_schedules_data():
     response = create_schedules_data()
     return response
@@ -32,9 +31,8 @@ def create_schedules_data():
     })
 
 
-@schedule.route('/api/schedules/<new_class_name>', methods=['POST'])
+@schedule.route('/api/schedules/<new_class_name>/', methods=['POST'])
 def post_new_class(new_class_name):
-
     session = Session()
     new_class_obj = ClassName(class_name=new_class_name)
     session.add(new_class_obj)
@@ -49,7 +47,7 @@ def post_new_class(new_class_name):
     return response
 
 
-@schedule.route('/api/schedules', methods=['POST'])
+@schedule.route('/api/schedules/', methods=['POST'])
 def post_table_data():
     headers_and_options = request.json.get('headersAndOptions')
     row_header = request.json.get('rowHeader')
