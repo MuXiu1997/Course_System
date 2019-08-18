@@ -246,7 +246,7 @@ export default {
         })
     },
     save () {
-      postSchedules()
+      postSchedules(this.table)
         .then(() => {
           Notification({
             title: 'success',
@@ -264,7 +264,7 @@ export default {
         })
     },
     getXlsx () {
-      postXlsx()
+      postXlsx(this.table)
         .then((response) => {
           let date = new Date()
           let blob = new Blob([response.data], { type: 'application/octet-stream' })
