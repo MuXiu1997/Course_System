@@ -1,7 +1,7 @@
-from django.urls import path
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    path('tokens/<time>', views.Token.as_view(), name='token')
+    re_path('tokens/(?P<time>.*?)/?', views.Token.as_view(), name='token')
 ]

@@ -122,4 +122,4 @@ STATIC_URL = '/admin/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# APPEND_SLASH = False
+APPEND_SLASH = False
