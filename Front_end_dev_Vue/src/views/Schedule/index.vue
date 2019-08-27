@@ -79,7 +79,7 @@
            :key="colIndex"
            class="tableHeader-cell"
       >
-        <span style="font-size: 16px">{{ col.title }}</span>
+        <span style="font-size: 16px">{{ col.majorTitle }}</span>
       </div>
       <!--延长此行，使滚动条联动不出现问题-->
       <div style="width: 100px;display: inline-block;">
@@ -166,7 +166,7 @@ export default {
           {
             id: 0,
             options: [],
-            title: null
+            majorTitle: null
           }
         ],
         rowHeader: [
@@ -203,10 +203,10 @@ export default {
       })
     getSchedules()
       .then(response => {
-        this.table = response.data
+        this.table = response.data['table']
       })
-    this.checkDuplicate()
     this.$nextTick(() => {
+      this.checkDuplicate()
       setTimeout(() => {
         loading.close()
         this.show = true
@@ -227,9 +227,9 @@ export default {
     },
     createNewClass () {
       this.dialogVisible = false
-      postNewClassName()
+      postNewClassName(this.newClassName)
         .then(response => {
-          this.table = response.data
+          this.table = response.data['table']
           Notification({
             title: 'success',
             message: '班级添加成功',

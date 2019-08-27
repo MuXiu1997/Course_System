@@ -23,7 +23,7 @@
         >
           <el-form-item
             label="用户名："
-            prop="userName"
+            prop="username"
             :rules="[{ required: true, message: '请输入用户名', trigger: ['blur', 'change'] }]"
           >
             <el-autocomplete
@@ -32,7 +32,7 @@
               :fetch-suggestions="(queryString, cb)=>{cb([{ value: 'python'}])}"
               prefix-icon="el-icon-user"
               placement="top-start"
-              v-model="form.userName">
+              v-model="form.username">
             </el-autocomplete>
           </el-form-item>
           <el-form-item
@@ -86,11 +86,11 @@ export default {
   data () {
     return {
       form: {
-        userName: '',
+        username: '',
         password: ''
       },
       rule: {
-        userName: [
+        username: [
           { required: true, message: 'Please fill in the user name', trigger: 'blur' }
         ],
         password: [
@@ -118,11 +118,10 @@ export default {
       })
     },
     submit () {
-      postToken(this.form)
+      postToken(this.form, new Date().getTime())
         .then(response => {
-          this.$cookie.set('userName', this.form.userName, 1)
+          this.$cookie.set('username', this.form.username, 1)
           this.$cookie.set('password', this.form.password, 1)
-          this.$cookie.set('token', response.data.token, 1)
           this.$store.dispatch('setToken', response.data.token)
             .then(() => {
               this.$router.push({ path: '/schedule' })

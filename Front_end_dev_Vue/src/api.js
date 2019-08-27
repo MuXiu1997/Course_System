@@ -4,9 +4,9 @@ import store from './store'
 
 let request = axios.create()
 
-export function postToken (data) {
+export function postToken (data, time) {
   return request({
-    url: '/api/token',
+    url: `/api/tokens/${time}`,
     method: 'post',
     data: data
   })

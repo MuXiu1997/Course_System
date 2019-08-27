@@ -27,15 +27,14 @@ const router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   if (store.getters.getToken === null) {
-    let userName = VueCookie.get('userName')
+    let username = VueCookie.get('username')
     let password = VueCookie.get('password')
-    if (userName && password) {
+    if (username && password) {
       let response = await postToken({
-        userName: userName,
+        username: username,
         password: password
-      })
+      }, new Date().getTime())
       await store.dispatch('setToken', response.data.token)
-      VueCookie.set('token', response.data.token, 1)
       next()
     } else {
       next()
