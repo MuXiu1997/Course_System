@@ -1,9 +1,9 @@
 import time
 
-import jwt
 from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
+from jwt import encode, decode, DecodeError
 
 SECRET = settings.SECRET_KEY
 
@@ -11,7 +11,9 @@ SECRET = settings.SECRET_KEY
 class JWTMiddleware(MiddlewareMixin):
     @staticmethod
     def process_request(request: HttpRequest):
-        if request.path == '/api/token':
+        if request.path.startswith('/api/tokens'):
+            return
+        if request.method == 'OPTIONS':
             return
         if request.path.startswith('/admin'):
             return
@@ -25,8 +27,8 @@ class JWTMiddleware(MiddlewareMixin):
             return http403('认证失败')
 
 
-def http403(msg):
-    return JsonResponse(dict(msg=msg), status=403)
+def http403(err):
+    return JsonResponse(dict(error=err), status=403)
 
 
 def create_token(username):
@@ -36,13 +38,13 @@ def create_token(username):
         exp=int(time.time()) + 60 * 60 * 24,
         sub=str(username)
     )
-    return jwt.encode(payload, SECRET).decode()
+    return encode(payload, SECRET).decode()
 
 
 def check_token(token):
     try:
-        payload = jwt.decode(token, SECRET)
-    except jwt.DecodeError:
+        payload = decode(token, SECRET)
+    except DecodeError:
         return
 
     iss, iat, exp, sub = payload.get('iss'), payload.get('iat', 0), payload.get('exp', 0), payload.get('sub')

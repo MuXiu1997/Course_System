@@ -3,35 +3,36 @@ import json
 from django.conf import settings
 from django.contrib import auth
 from django.http import JsonResponse, HttpRequest
-from middleware.jwt_middleware import create_token
+from django.views import View
 
+from middleware.jwt_middleware import create_token
 
 AUTHOR = settings.AUTHOR
 
 
-def post_token(request: HttpRequest):
-    try:
-        post_json = json.loads(request.body)
+class Token(View):
+    def post(self, request: HttpRequest, time):
+        _ = time
+        try:
+            post_json = json.loads(request.body)
 
-        username = post_json.get('username')
+            username = post_json.get('username')
 
-        if username == AUTHOR:
-            return token_json_response(AUTHOR)
+            if username == AUTHOR:
+                return self.token_json_response(AUTHOR)
 
-        password = post_json.get('password')
-        user = auth.authenticate(username=username, password=password)
+            password = post_json.get('password')
+            user = auth.authenticate(username=username, password=password)
 
-        if user:
-            return token_json_response(username)
-        else:
-            return JsonResponse(dict(token='', error='用户名或密码有误'))
-    except Exception as err:
-        return JsonResponse(dict(token='', error=err))
+            if user:
+                return self.token_json_response(username)
+            else:
+                return JsonResponse(dict(token='', error='用户名或密码有误'))
+        except Exception as err:
+            return JsonResponse(dict(token='', error=err))
 
-
-def token_json_response(username):
-    token = create_token(username)
-    return JsonResponse(dict(token=token, error=''))
-
-
+    @staticmethod
+    def token_json_response(username):
+        token = create_token(username)
+        return JsonResponse(dict(token=token, error=None))
 
