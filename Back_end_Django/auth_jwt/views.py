@@ -27,12 +27,11 @@ class Token(View):
             if user:
                 return self.token_json_response(username)
             else:
-                return JsonResponse(dict(token='', error='用户名或密码有误'))
+                return JsonResponse(dict(token=None, error='用户名或密码有误'), status=403)
         except Exception as err:
-            return JsonResponse(dict(token='', error=err))
+            return JsonResponse(dict(token=None, error=err), status=403)
 
     @staticmethod
     def token_json_response(username):
         token = create_token(username)
         return JsonResponse(dict(token=token, error=None))
-

@@ -1,7 +1,5 @@
-import json
 import re
 from io import BytesIO
-# from .schedule import save
 from zipfile import ZipFile, ZIP_DEFLATED
 
 from django.http import HttpRequest, HttpResponse
@@ -10,15 +8,14 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment
 from openpyxl.writer.excel import ExcelWriter
 
+from schedule.views import save, deserialization
+
 
 class XLSX(View):
     @staticmethod
     def post(request: HttpRequest):
-        post_json = json.loads(request.body)
-        headers_and_options = post_json.get('headersAndOptions')
-        row_header = post_json.get('rowHeader')
-        schedules_data = post_json.get('schedulesData')
-        # save(headers_and_options, row_header, schedules_data)
+        headers_and_options, row_header, schedules_data = deserialization(request)
+        save(headers_and_options, row_header, schedules_data)
 
         xlsx_obj = XlsxFile(majors=headers_and_options, classes=row_header, schedules=schedules_data)
         xlsx_obj.fill()
@@ -43,7 +40,7 @@ class XlsxFile(object):
     def put_major(self):
         index = 2
         for each_major in self.majors:
-            self._cell(1, index).value = each_major['title']
+            self._cell(1, index).value = each_major['majorTitle']
             self._cell(1, index).alignment = self.align
             index += 1
 

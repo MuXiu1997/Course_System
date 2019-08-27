@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middleware.jwt_middleware.JWTMiddleware'
+    'middleware.jwt_middleware.JWTMiddleware',
 ]
 
 ROOT_URLCONF = 'rest_api.urls'
@@ -119,5 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/admin/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # APPEND_SLASH = False

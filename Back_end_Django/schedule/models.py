@@ -12,6 +12,9 @@ class Teacher(models.Model):
         verbose_name = verbose_name_plural = '教师'
 
     def __repr__(self):
+        return self.__repr__()
+
+    def __str__(self):
         return self.name
 
 
@@ -33,12 +36,15 @@ class Major(models.Model):
     def info(self):
         return {
             'id': self.id,
-            'MajorTitle': self.title,
+            'majorTitle': self.title,
             'options': [teacher.name for teacher in self.teachers.all()],
             'duration': self.duration
         }
 
     def __repr__(self):
+        return self.__repr__()
+
+    def __str__(self):
         return self.title
 
 
@@ -62,6 +68,9 @@ class Class(models.Model):
         }
 
     def __repr__(self):
+        return self.__repr__()
+
+    def __str__(self):
         return self.name
 
 
@@ -84,4 +93,7 @@ class Archive(models.Model):
         self.info = json.dumps(value, ensure_ascii=False)
 
     def __repr__(self):
+        return self.__repr__()
+
+    def __str__(self):
         return self.info

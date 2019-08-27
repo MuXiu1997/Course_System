@@ -27,7 +27,7 @@ class ScheduleClass(View):
     def post(request: HttpRequest, class_name):
         try:
             new_class = Class.objects.create(name=class_name)
-            archives = Archive.objects.filter(class_id=new_class.id)
+            archives = Archive.objects.filter(class_id_id=new_class.id)
             [archive.delete() for archive in archives]
 
             return create_schedules_response()
@@ -79,8 +79,8 @@ def save(headers_and_options, row_header, schedules_data):
     for row_index, row in enumerate(schedules_data):
         for col_index, col in enumerate(row):
             archive, _ = Archive.objects.get_or_create(
-                class_id=row_header[row_index]['id'],
-                major_id=headers_and_options[col_index]['id'],
+                class_id_id=row_header[row_index]['id'],
+                major_id_id=headers_and_options[col_index]['id'],
             )
             archive.info_obj = col
             archive.save()
@@ -89,8 +89,8 @@ def save(headers_and_options, row_header, schedules_data):
 def create_class_infos(this_class, headers):
     class_infos = []
     for each_major in headers:
-        archive, is_create = Archive.objects.get_or_create(class_id=this_class['id'], major_id=each_major['id'])
-        if is_create:
+        archive = Archive.objects.filter(class_id_id=this_class['id'], major_id_id=each_major['id']).first()
+        if not archive:
             info = {
                 'startDate': None,
                 'endDate': None,
