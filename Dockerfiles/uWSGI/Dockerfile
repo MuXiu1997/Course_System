@@ -1,12 +1,13 @@
 FROM python:3.7.3
 
-RUN pip install uwsgi -i http://pypi.douban.com/simple --trusted-host pypi.douban.com \
-&& pip install django -i http://pypi.douban.com/simple --trusted-host pypi.douban.com \
-&& pip install pyjwt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com \
-&& pip install openpyxl -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+RUN pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn \
+&& pip install uwsgi -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn \
+&& pip install django -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn \
+&& pip install pyjwt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn \
+&& pip install openpyxl -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 
-COPY ./uwsgi.ini /app/uwsgi.ini
+COPY ./uwsgi.ini /config/uwsgi.ini
 
 EXPOSE 5000
 
-CMD ["uwsgi", "--ini", "/app/uwsgi.ini"]
+CMD ["uwsgi", "--ini", "/config/uwsgi.ini"]

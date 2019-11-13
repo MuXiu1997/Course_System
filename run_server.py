@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from subprocess import call
+import os
 
-COURSE_SYSTEM = '/root/Course_System_v20190827/'
+COURSE_SYSTEM = os.path.dirname((os.path.abspath(__file__)))
 C_DJANGO = 'Course_System_django_v20190827'
 C_NGINX = 'Course_System_nginx_v20190827'
 
@@ -14,14 +16,14 @@ def rm():
 
 def run():
     call(['docker', 'run', '-d', '-p', '80:80', '--name', C_NGINX,
-          '-v', COURSE_SYSTEM + 'Front_end_Vue:/app/html',
-          '-v', COURSE_SYSTEM + 'config/nginx.conf:/etc/nginx/nginx.conf',
-          '-v', COURSE_SYSTEM + 'logs:/var/log/nginx',
-          'nginx:1.16'])
+          '-v', os.path.join(COURSE_SYSTEM, 'Front_end_Vue:/app/html'),
+          '-v', os.path.join(COURSE_SYSTEM, 'config/nginx.conf:/etc/nginx/nginx.conf'),
+          '-v', os.path.join(COURSE_SYSTEM, 'logs:/var/log/nginx'),
+          'nginx:1.16-alpine'])
 
     call(['docker', 'run', '-d', '-p', '5000:5000', '--name', C_DJANGO,
-          '-v', COURSE_SYSTEM + 'Back_end_Django:/app',
-          '-v', COURSE_SYSTEM + 'config/uwsgi.ini:/app/uwsgi.ini',
+          '-v', os.path.join(COURSE_SYSTEM, 'Back_end_Django:/app:ro'),
+          '-v', os.path.join(COURSE_SYSTEM, 'config/uwsgi.ini:/config/uwsgi.ini:ro'),
           'uwsgi_django:latest'])
 
 
