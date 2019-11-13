@@ -23,3 +23,5 @@ yarn-error.log*
 *.sw?
 
 *.http
+*.sqlite3
+logs/
