@@ -4,8 +4,8 @@ from subprocess import call
 import os
 
 COURSE_SYSTEM = os.path.dirname((os.path.abspath(__file__)))
-C_DJANGO = 'Course_System_django_v20190827'
-C_NGINX = 'Course_System_nginx_v20190827'
+C_DJANGO = 'Course_System_django'
+C_NGINX = 'Course_System_nginx'
 
 
 def rm():
@@ -22,8 +22,8 @@ def run():
           'nginx:1.16-alpine'])
 
     call(['docker', 'run', '-d', '-p', '5000:5000', '--name', C_DJANGO,
-          '-v', os.path.join(COURSE_SYSTEM, 'Back_end_Django:/app:ro'),
-          '-v', os.path.join(COURSE_SYSTEM, 'config/uwsgi.ini:/config/uwsgi.ini:ro'),
+          '-v', os.path.join(COURSE_SYSTEM, 'Back_end_Django:/app'),
+          '-v', os.path.join(COURSE_SYSTEM, 'config/uwsgi.ini:/config/uwsgi.ini'),
           'uwsgi_django:latest'])
 
 
